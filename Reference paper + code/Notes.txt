@@ -1,0 +1,23 @@
+Run test_omgp to see a demo of the code splitting an unlabeled set of samples into three trajectories.
+
+For more info refer to the paper 'Overlapping Mixtures of Gaussian Processes for the data association problem', by Miguel Lázaro-Gredilla, Steven Van Vaerenbergh and Neil D. Lawrence.
+
+
+
+Some quick info about the code:
+
+omgp_bound is the MV bound, the optimization target.
+ 
+omgpE performs the E step (omgpEinc does this over an increasing number of data points).
+ 
+omgp is the main function setting up the initial hyperparameters and calling omgpEinc and omgp_bound in turns to solve the problem and make probabilistic predictions.
+ 
+Note that the optimization target is not convex, so hyperparameter initialization can be critical. Though the function omgp provides a reasonable starting point, which I have successfully used in the paper, for other datasets, it may be necessary to tweak them, or even to play with the order in which the EM updates are performed.
+
+Some of the included files are from Carl E. Rasmussen's GP toolbox. OMGP's code is modular in the sense that it allows for arbitrary covariance functions to be plugged in, as long as they follow Carl's conventions.
+ 
+
+
+Have fun and please let me know if you find bugs or need any help (miguel@tsc.uc3m.es).
+
+
