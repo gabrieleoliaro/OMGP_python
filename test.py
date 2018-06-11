@@ -1,6 +1,18 @@
-S = 'function evaluation'
-i = 15
+import numpy as np
 
-f0 = 18934498304.39403859385
+A = [
+     [1, 1, 2],
+     [3, 5, 8]
+     ]
 
-print("%s %6d;  Value %4.6e\n" % (S, i, f0)); #print to screen
+B = np.matrix([
+               [2, 3, 5],
+               [7, 11, 13],
+               ])
+
+
+
+y = np.ones((2, 3))
+print(y)
+
+print(y.shape[0])

@@ -310,8 +310,3 @@ def rewrap(s,v):
 
     """
 
-    
-
-
-if __name__ == '__main__':
-    minimize()
