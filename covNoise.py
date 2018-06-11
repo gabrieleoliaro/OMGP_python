@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import sys
 import math
 
 def covNoise(logtheta, x, z):
