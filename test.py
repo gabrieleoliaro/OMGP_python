@@ -1,6 +1,6 @@
-prova = 2;
+S = 'function evaluation'
+i = 15
 
-print(len(prova))
+f0 = 18934498304.39403859385
 
-if prova == 2:
-    
+print("%s %6d;  Value %4.6e\n" % (S, i, f0)); #print to screen
