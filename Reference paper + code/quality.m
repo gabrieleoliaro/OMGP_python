@@ -11,7 +11,7 @@ for m = 1:M
     center = center + pi0(m)*mu(:,:,m);
 end
 
-NMSE = mean(mean((Y-center).^2)./mean((Y-ones(Ntst,1)*mean(Y)).^2));
+NMSE = mean(    mean( (Y-center).^2 )   ./     mean( (Y - ones(Ntst,1)*mean(Y) ).^2));
 
 p = 0;
 for m= 1:M

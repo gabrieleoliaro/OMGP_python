@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import math
+import numpy as np
 
 def covNoiseCM(logtheta, x):
     """
@@ -22,7 +23,7 @@ def covNoiseCM(logtheta, x):
 
     """
 
-    s2 = math.exp(2 * logtheta)             # Noise variance
+    s2 = np.exp(2 * logtheta)             # Noise variance
     A = s2 * np.identity(x.shape[1])
 
 def covNoiseTSC(logtheta):
@@ -45,7 +46,7 @@ def covNoiseTSC(logtheta):
 
     """
 
-    s2 = math.exp(2 * logtheta)             # Noise variance
+    s2 = np.exp(2 * logtheta)             # Noise variance
 
     # Compute test set covariances
     A = s2
@@ -71,5 +72,5 @@ def covNoiseDERIV(logtheta, x):
 
     """
 
-    s2 = math.exp(2 * logtheta)             # Noise variance
+    s2 = np.exp(2 * logtheta)             # Noise variance
     A = 2 * s2 * np.identity(x.shape[1])
