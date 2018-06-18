@@ -1,57 +1,114 @@
 #!/usr/bin/python
 
-def covSum(covfunc, loftheta, x, z):
+def covSumCM(covfunc, loftheta, x, z):
     """
         covSum - compose a covariance function as the sum of other covariance
         functions. This function doesn't actually compute very much on its own, it
         merely does some bookkeeping, and calls other covariance functions to do the
         actual work.
 
+        CM stands for Covariance Matrix
+
         For more help on design of covariance functions, try "help covFunctions".
 
         (C) Copyright 2006 by Carl Edward Rasmussen, 2006-03-20.
     """
 
-    for f in covfunc:                           # Iterate over covariance functions
-        # TODO: translate if iscell(f{:}), f = f{:}; end          # Dereference cell array if necessary
-        # TODO: translate j(i) = cellstr(feval(f{:}))
+    [n, D] = np.shape(x)
 
-    narguments = len(args)
-    if narguments == 1:                                   # Report number of parameters
-        A = char(j(1))
-        for i in range(2, len(covfunc)):
-            # TODO: translate A = [A, '+', char(j(i))]
-        return
+    # Create and fill j array with number of parameters for each covariance function to be used in the summation
+    # Create and fill v array, which indicates to which covariance parameters belong
+    j = np.array([])
+    v = np.array([])
+    for i in range(len(covfunc)):
+        if (covfunc[i] is covSEisoCM) or (covfunc[i] is covSEisoTSC) or (covfunc[i] is covSEisoDERIV):
+            j = np.append(j, 2)
+        elif (covfunc[i] is covNoiseCM) or (covfunc[i] is covNoiseTSC) or (covfunc[i] is covNoiseDERIV):
+            j = np.append(j, 1)
+        else
+            j = np.append(j, "")
+
+        v = np.concatenate((v, np.kron(ones((1, j(i))), i))
+
+ 
+    
+    
+    A = np.zeros(n, n)                  # Allocate space for covariance matrix
+    for function in covfunc:
+        A = A + function(logtheta * np.equal(v, i), x)
+
+def covSumTSC(covfunc, loftheta, x, z):
+    """
+        covSum - compose a covariance function as the sum of other covariance
+        functions. This function doesn't actually compute very much on its own, it
+        merely does some bookkeeping, and calls other covariance functions to do the
+        actual work.
+
+        TSC stands for Test Set Covariances
+
+        For more help on design of covariance functions, try "help covFunctions".
+
+        (C) Copyright 2006 by Carl Edward Rasmussen, 2006-03-20.
+    """
 
     [n, D] = np.shape(x)
 
-    v = []                          # v vector indicates to which covariance parameters belong
+    # Create and fill j array with number of parameters for each covariance function to be used in the summation
+    # Create and fill v array, which indicates to which covariance parameters belong
+    j = np.array([])
+    v = np.array([])
     for i in range(len(covfunc)):
-        v = [v np.tile(i, (1, eval(char(j(i)))))]
-        
+        if (covfunc[i] is covSEisoCM) or (covfunc[i] is covSEisoTSC) or (covfunc[i] is covSEisoDERIV):
+            j = np.append(j, 2)
+        elif (covfunc[i] is covNoiseCM) or (covfunc[i] is covNoiseTSC) or (covfunc[i] is covNoiseDERIV):
+            j = np.append(j, 1)
+        else
+            j = np.append(j, "")
 
-    if narguments == 3:                     # Compute covariance matrix
-        A = np.zeros(n, n);                   # Allocate space for covariance matrix
-        for i in range(len(covfunc)):         # Iteration over summand functions
-            f = covfunc(i);
-            # TODO: translate if iscell(f{:}), f = f{:}; end        # Dereference cell array if necessary
-                A = A + f{:}(logtheta(v==i), x));                   # Accumulate covariances
+        v = np.concatenate((v, np.kron(ones((1, j(i))), i))
 
-    if narguments == 4:                     # Compute derivative matrix or test set covariances
-        #TODO translate if nargout == 2:    # Compute test set cavariances
-            A = zeros((z.shape[0], 1))
-            B = zeros((x.shape[0], z.shape[0]));    # Allocate space
-            for i in len(covfunc):
-                f = covfunc[i]
-                #TODO translate if iscell(f{:}), f = f{:}; end      # dereference cell array if necessary
-                [AA BB] = f{:}(logtheta(v==i), x, z)        # Compute test covariances
-                A = A + AA
-                B = B + BB                                  # And accumulate
-        else:                                               # Compute derivative matrices
-            i = v[z]                                       # which covariance function
-            j = (v(1:z)==i).sum(axis=0)                    # which parameter in that covariance
-            f = covfunc[i]
-            # TODO translate: if iscell(f{:}), f = f{:}; end        # Dereference cell array if necessary
-            A = f{:}(logtheta(v==i), x, j)                # Compute derivative
-  
+    # Allocate space
+    A = np.zeros(z.shape[0], 1)
+    B = np.zeros(x.shape[0], z.shape[0])
 
+    for function in covfunc:
+        [AA BB] = function(logtheta * np.equal(v, i), x, z)                 # Compute test covariances
+        # Accumulate
+        A = A + AA
+        B = B + BB
+
+def covSumDERIV(covfunc, loftheta, x, z):
+    """
+        covSum - compose a covariance function as the sum of other covariance
+        functions. This function doesn't actually compute very much on its own, it
+        merely does some bookkeeping, and calls other covariance functions to do the
+        actual work.
+
+        DERIV stands for derivative matrix
+
+        For more help on design of covariance functions, try "help covFunctions".
+
+        (C) Copyright 2006 by Carl Edward Rasmussen, 2006-03-20.
+    """
+
+    [n, D] = np.shape(x)
+
+    # Create and fill j array with number of parameters for each covariance function to be used in the summation
+    # Create and fill v array, which indicates to which covariance parameters belong
+    j = np.array([])
+    v = np.array([])
+    for i in range(len(covfunc)):
+        if (covfunc[i] is covSEisoCM) or (covfunc[i] is covSEisoTSC) or (covfunc[i] is covSEisoDERIV):
+            j = np.append(j, 2)
+        elif (covfunc[i] is covNoiseCM) or (covfunc[i] is covNoiseTSC) or (covfunc[i] is covNoiseDERIV):
+            j = np.append(j, 1)
+        else
+            j = np.append(j, "")
+
+        v = np.concatenate((v, np.kron(ones((1, j(i))), i))
+
+    # Compute derivative matrices
+    i = v[z]                                            # Which covariance function
+    j = np.sum(np.equal(v[0:z], i))                     # Which parameter in that covariance
+    A = function(logtheta * np.equal(v, i), x, j)
+                           
