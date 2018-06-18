@@ -36,8 +36,7 @@ case 3                                              % compute covariance matrix
 
 case 4                      % compute derivative matrix or test set covariances
   if nargout == 2                                % compute test set cavariances
-    A = zeros(size(z,1),1);
-    B = zeros(size(x,1),size(z,1));    % allocate space
+    A = zeros(size(z,1),1); B = zeros(size(x,1),size(z,1));    % allocate space
     for i = 1:length(covfunc)
       f = covfunc(i);
       if iscell(f{:}), f = f{:}; end      % dereference cell array if necessary

@@ -31,7 +31,7 @@ def covSEisoCM(loghyper, x, z):
     # Compute Covariance Matrix
     A = sf2 * np.exp(-sq_distONE(x.conj().transpose() / ell) / 2)
 
-def covSEisoTST(loghyper, x, z):
+def covSEisoTSC(loghyper, x, z):
     """
     Squared Exponential covariance function with isotropic distance measure. The 
     covariance function is parameterized as:
