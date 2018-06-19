@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import numpy as np
+import covSum, covSEiso, covNoise
 
 def omgp_gen(loghyper, n, D, m):
     """
@@ -13,14 +14,16 @@ def omgp_gen(loghyper, n, D, m):
     """
     covfunc = np.array(['covSum', 'covSEiso', 'covNoise']) # TODO: specify which covSum, covSEiso, covNoise function
 
+    
     x = np.zeros((n * m, 1))
     Y = np.zeros((n * m, D))
     for k in range(m):
-        x[(k - 1) * n + 1 : k * n) = np.random.random((n, 1)) * (n - 1) + 1
-        Y[(k-1) * n + 1 : k * n, :] = np.matmul(np.linalg.cholesky(covfunc[0](loghyper, x[(k-1) * n + 1 : k * n])), np.random.standard_normal((n, D)))        # Cholesky decomp.
+        x[(k - 1) * n + 1 : k * n] = np.random.random((n, 1)) * (n - 1) + 1
+        Y[(k-1) * n + 1 : k * n, :] = np.matmul(np.linalg.cholesky(covfunc[0](loghyper, x[(k-1) * n + 1 : k * n])), np.random.standard_normal((n, D)))        # Cholesky decomp.
+
 
     order_X = np.argsort(x)
     x = np.sort(x)
     Y = np.sort(Y, order=order_X)
     
-    
+    return [x, Y]

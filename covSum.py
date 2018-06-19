@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+import numpy as np
+import covSEiso, covNoise
+
 def covSumCM(covfunc, loftheta, x, z):
     """
         covSum - compose a covariance function as the sum of other covariance

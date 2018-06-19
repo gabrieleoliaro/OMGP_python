@@ -3,7 +3,7 @@
 import numpy as np
 import math
 
-from sq_dist import *
+import sq_dist
 
 def covSEisoCM(loghyper, x, z):
     """
