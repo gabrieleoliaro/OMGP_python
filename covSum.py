@@ -16,6 +16,10 @@ def covSumCM(covfunc, loftheta, x, z):
 
     [n, D] = np.shape(x)
 
+    # Pop the 'covSumCM' function out of the covfunc list, so that we use the array to compute the subcovariances
+    if covfunc[0] == 'covSumCM':
+	  np.delete(covfunc,0)
+
     # Create and fill j array with number of parameters for each covariance function to be used in the summation
     # Create and fill v array, which indicates to which covariance parameters belong
     j = np.array([])
@@ -52,6 +56,10 @@ def covSumTSC(covfunc, loftheta, x, z):
     """
 
     [n, D] = np.shape(x)
+
+    # Pop the 'covSumCM' function out of the covfunc list, so that we use the array to compute the subcovariances
+    if covfunc[0] == 'covSumTSC':
+	  np.delete(covfunc,0)
 
     # Create and fill j array with number of parameters for each covariance function to be used in the summation
     # Create and fill v array, which indicates to which covariance parameters belong
@@ -92,6 +100,10 @@ def covSumDERIV(covfunc, loftheta, x, z):
     """
 
     [n, D] = np.shape(x)
+
+    # Pop the 'covSumCM' function out of the covfunc list, so that we use the array to compute the subcovariances
+    if covfunc[0] == 'covSumDERIV':
+	  np.delete(covfunc,0)
 
     # Create and fill j array with number of parameters for each covariance function to be used in the summation
     # Create and fill v array, which indicates to which covariance parameters belong
