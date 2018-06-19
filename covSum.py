@@ -28,7 +28,7 @@ def covSumCM(covfunc, loftheta, x, z):
         else
             j = np.append(j, "")
 
-        v = np.concatenate((v, np.kron(ones((1, j(i))), i))
+        v = np.concatenate((v, np.kron(ones((1, j(i))), i)))
 
  
     
