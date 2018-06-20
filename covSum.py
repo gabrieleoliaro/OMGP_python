@@ -21,7 +21,7 @@ def covSumCM(covfunc, loftheta, x, z):
 
     # Pop the 'covSumCM' function out of the covfunc list, so that we use the array to compute the subcovariances
     if covfunc[0] == 'covSumCM':
-	  np.delete(covfunc,0)
+        np.delete(covfunc, 0)
 
     # Create and fill j array with number of parameters for each covariance function to be used in the summation
     # Create and fill v array, which indicates to which covariance parameters belong
@@ -32,7 +32,7 @@ def covSumCM(covfunc, loftheta, x, z):
             j = np.append(j, 2)
         elif (covfunc[i] is covNoiseCM) or (covfunc[i] is covNoiseTSC) or (covfunc[i] is covNoiseDERIV):
             j = np.append(j, 1)
-        else
+        else:
             j = np.append(j, "")
 
         v = np.concatenate((v, np.kron(ones((1, j(i))), i)))
@@ -62,25 +62,26 @@ def covSumTSC(covfunc, loftheta, x, z):
 
     # Pop the 'covSumCM' function out of the covfunc list, so that we use the array to compute the subcovariances
     if covfunc[0] == 'covSumTSC':
-	  np.delete(covfunc,0)
+        np.delete(covfunc,0)
 
     # Create and fill j array with number of parameters for each covariance function to be used in the summation
     # Create and fill v array, which indicates to which covariance parameters belong
     j = np.array([])
     v = np.array([])
+
     for i in range(len(covfunc)):
         if (covfunc[i] is covSEisoCM) or (covfunc[i] is covSEisoTSC) or (covfunc[i] is covSEisoDERIV):
             j = np.append(j, 2)
         elif (covfunc[i] is covNoiseCM) or (covfunc[i] is covNoiseTSC) or (covfunc[i] is covNoiseDERIV):
             j = np.append(j, 1)
-        else
+        else:
             j = np.append(j, "")
-
-        v = np.concatenate((v, np.kron(ones((1, j(i))), i))
-
-    # Allocate space
-    A = np.zeros(z.shape[0], 1)
-    B = np.zeros(x.shape[0], z.shape[0])
+       #v = np.concatenate((v, np.kron(np.ones((1, j(i))), i))
+    print(covfunc)
+    print(j)
+    alloc = np.zeros((1, 2))                          
+    A = np.zeros((z.shape[0], 1))
+    B = np.zeros((x.shape[0], z.shape[0]))
 
     for function in covfunc:
         [AA BB] = function(logtheta * np.equal(v, i), x, z)                 # Compute test covariances
@@ -106,7 +107,7 @@ def covSumDERIV(covfunc, loftheta, x, z):
 
     # Pop the 'covSumCM' function out of the covfunc list, so that we use the array to compute the subcovariances
     if covfunc[0] == 'covSumDERIV':
-	  np.delete(covfunc,0)
+        np.delete(covfunc,0)
 
     # Create and fill j array with number of parameters for each covariance function to be used in the summation
     # Create and fill v array, which indicates to which covariance parameters belong
@@ -117,9 +118,9 @@ def covSumDERIV(covfunc, loftheta, x, z):
             j = np.append(j, 2)
         elif (covfunc[i] is covNoiseCM) or (covfunc[i] is covNoiseTSC) or (covfunc[i] is covNoiseDERIV):
             j = np.append(j, 1)
-        else
+        else:
             j = np.append(j, "")
-
+        
         v = np.concatenate((v, np.kron(ones((1, j(i))), i))
 
     # Compute derivative matrices

@@ -1,9 +1,12 @@
 #!/usr/bin/python
 
-from mpl_toolkits.mplot3d import Axes3D
+
 import matplotlib.pyplot as plt
 import numpy as np
-import omgp_gen
+from omgp_gen import *
+
+from mpl_toolkits.mplot3d import Axes3D
+
 
 def test_omgp():
     """
@@ -16,6 +19,7 @@ def test_omgp():
     D = 2
     M = 3
 
+
     # Tunable hyperparameters
     timescale = 20
     sigvar = 1
@@ -26,15 +30,17 @@ def test_omgp():
     [x, Y] = omgp_gen(loghyper, n, D, M)
 
     x_train = x[::2]
-    Y_train = Y[::2,:]
+    Y_train = Y[::2, :]
     x_test = x[1::2]
-    Y_test = Y[1::2,:]
+    Y_test = Y[1::2, :]
 
-    #Initialize Plot
+    # Initialize Plot
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
-    ax.scatter(x_train, Y_train[:,0], Y_train[:,1], 'k', 'x')   # Add scattered points
-    ax.set_title("%d trajectories to be separated (drag to see)" % M) # Add title
+    ax.scatter(x_train, Y_train[:, 0], Y_train[:, 1], 'k', 'x')  # Add scattered points
+    ax.set_title("%d trajectories to be separated (drag to see)" % M)  # Add title
 
     plt.show()
+
+test_omgp()
