@@ -23,7 +23,8 @@ end
 [n, D] = size(x);
 
 v = [];              % v vector indicates to which covariance parameters belong
-for i = 1:length(covfunc), v = [v repmat(i, 1, eval(char(j(i))))]; end
+for i = 1:length(covfunc), 
+    v = [v repmat(i, 1, eval(char(j(i))))]; end
 
 switch nargin
 case 3                                              % compute covariance matrix

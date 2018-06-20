@@ -4,7 +4,7 @@ import numpy as np
 from covSEiso import *
 from covNoise import *
 
-def covSumCM(covfunc, loftheta, x):
+def covSumCM(covfunc, logtheta, x):
     """
         covSum - compose a covariance function as the sum of other covariance
         functions. This function doesn't actually compute very much on its own, it
@@ -26,8 +26,8 @@ def covSumCM(covfunc, loftheta, x):
 
     # Create and fill j array with number of parameters for each covariance function to be used in the summation
     # Create and fill v array, which indicates to which covariance parameters belong
-    j = np.array([])
-    v = np.array([])
+    j = np.array([], dtype = int)
+    v = np.array([], dtype = int)
     for i in range(len(covfunc)):
         if (covfunc[i] is covSEisoCM) or (covfunc[i] is covSEisoTSC) or (covfunc[i] is covSEisoDERIV):
             j = np.append(j, 2)
@@ -35,8 +35,11 @@ def covSumCM(covfunc, loftheta, x):
             j = np.append(j, 1)
         else:
             j = np.append(j, "")
+            
+        # tbd: do we want the same values of the Matlab array or not? If yes, we have to substitute i with (i+1)
+        v = np.concatenate((v, (i * np.ones((j[i]), dtype=int))))
 
-        v = np.concatenate((v, np.kron(np.ones((1, j[i])), i)))
+        
 
  
     
