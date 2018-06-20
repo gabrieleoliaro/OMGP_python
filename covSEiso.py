@@ -24,7 +24,7 @@ def covSEisoCM(loghyper, x, z):
     
     (C) Copyright 2006 by Carl Edward Rasmussen (2007-06-25)
     """
-    [n D] = x.shape
+    [n, D] = np.shape(x)
     ell = np.exp(loghyper[0])                 # Characteristic length scale
     sf2 = np.exp(2 * loghyper[1])             # Signal variance
 
@@ -50,7 +50,7 @@ def covSEisoTSC(loghyper, x, z):
     
     (C) Copyright 2006 by Carl Edward Rasmussen (2007-06-25)
     """
-    [n D] = x.shape
+    [n, D] = np.shape(x)
     ell = np.exp(loghyper[0])                 # Characteristic length scale
     sf2 = np.exp(2 * loghyper[1])             # Signal variance
 
@@ -78,7 +78,7 @@ def covSEisoDERIV(loghyper, x, z):
     
     (C) Copyright 2006 by Carl Edward Rasmussen (2007-06-25)
     """
-    [n D] = x.shape
+    [n, D] = np.shape(x)
     ell = np.exp(loghyper[0])                 # Characteristic length scale
     sf2 = np.exp(2 * loghyper[1])             # Signal variance
 
