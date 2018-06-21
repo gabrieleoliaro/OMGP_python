@@ -3,9 +3,9 @@
 import numpy as np
 import math
 
-import sq_dist
+from sq_dist import *
 
-def covSEisoCM(loghyper, x, z):
+def covSEisoCM(loghyper, x):
     """
     Squared Exponential covariance function with isotropic distance measure. The 
     covariance function is parameterized as:
@@ -30,6 +30,7 @@ def covSEisoCM(loghyper, x, z):
 
     # Compute Covariance Matrix
     A = sf2 * np.exp(-sq_distONE(x.conj().transpose() / ell) / 2)
+    return A
 
 def covSEisoTSC(loghyper, x, z):
     """

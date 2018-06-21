@@ -33,18 +33,22 @@ def covSumCM(covfunc, logtheta, x):
             j = np.append(j, 2)
         elif (covfunc[i] is covNoiseCM) or (covfunc[i] is covNoiseTSC) or (covfunc[i] is covNoiseDERIV):
             j = np.append(j, 1)
-        else:
-            j = np.append(j, "")
+        #else:
+            #j = np.append(j, "")
             
-        # tbd: do we want the same values of the Matlab array or not? If yes, we have to substitute i with (i+1)
         v = np.concatenate((v, (i * np.ones((j[i]), dtype=int))))
-
-        
-
  
     
     
     A = np.zeros((n, n))                  # Allocate space for covariance matrix
     for i in range(len(covfunc)):
-        A = A + covfunc[i](logtheta * np.equal(v, i), x)
+        loghyper = np.array([])
+        for j in range(len(v)):
+            if (v[j] == i):
+                loghyper = np.append(loghyper, logtheta[j])
+        temp = covfunc[i](loghyper, x)
+        A = A + temp
+
+
+    return A
 

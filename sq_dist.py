@@ -23,6 +23,10 @@ def sq_distONE(a):
     a = a - mu                              # Subtract off mean
     b = a
     m = n
+    C = np.sum(np.multiply(a, a), 0).conj().transpose() + (np.sum(np.multiply(b, b), 0) - 2 * a.conj().transpose() * b)
+    C = np.maximum(C, 0)                 # Numerical noise can cause C to negative i.e. C > -1e-14
+
+    return C        
 
 def sq_distTWO(a, b):
     """
@@ -56,5 +60,5 @@ def sq_distTWO(a, b):
     C = np.sum(a * a, 0).conj().transpose() + (np.sum(b * b, 0) - 2 * a.conj().transpose() * b)
     C = np.maximum(C,0)                 # Numerical noise can cause C to negative i.e. C > -1e-14
         
-    
+    return C
     

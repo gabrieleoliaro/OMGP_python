@@ -24,7 +24,8 @@ def covNoiseCM(logtheta, x):
     """
 
     s2 = np.exp(2 * logtheta)             # Noise variance
-    A = s2 * np.identity(x.shape[1])
+    A = s2 * np.identity(x.shape[0])
+    return A
 
 def covNoiseTSC(logtheta):
     """
@@ -51,6 +52,8 @@ def covNoiseTSC(logtheta):
     # Compute test set covariances
     A = s2
     B = 0                                   # Zero cross covariances by independence
+
+    return [A, B]
 
 def covNoiseDERIV(logtheta, x):
     """
