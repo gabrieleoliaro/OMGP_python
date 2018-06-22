@@ -15,8 +15,8 @@ def test_omgp():
 
     # Number of time instants per GP, dimensions and GPs
 
-    n = 20
-    D = 3
+    n = 100
+    D = 2
     M = 3
 
 
@@ -28,18 +28,20 @@ def test_omgp():
     # Data generation and plotting
     loghyper = np.array([np.log(timescale), 0.5 * np.log(sigvar), 0.5 * np.log(noisevar)])
     [x, Y] = omgp_gen(loghyper, n, D, M)
-
     x_train = x[::2]
-    Y_train = Y[::2, :]
+    Y_train = Y[::2]
     x_test = x[1::2]
-    Y_test = Y[1::2, :]
+    Y_test = Y[1::2]
+
 
     # Initialize Plot
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-
-    ax.scatter(x_train, Y_train[:, 0], Y_train[:, 1], 'k', 'x')  # Add scattered points
+    ax.scatter(x_train, Y_train[:, 0], Y_train[:, 1], c='k', marker='x')  # Add scattered points
     ax.set_title("%d trajectories to be separated (drag to see)" % M)  # Add title
+    ax.set_xlabel('X Axis')
+    ax.set_ylabel('Y Axis')
+    ax.set_zlabel('Z Axis')
 
     plt.show()
 

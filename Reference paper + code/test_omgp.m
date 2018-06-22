@@ -7,8 +7,8 @@ close all
 
 % Number of time instants per GP, dimensions, and GPs
 
-n = 20;
-D = 3;
+n = 100;
+D = 2;
 M = 3;
 
 
