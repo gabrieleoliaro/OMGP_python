@@ -55,9 +55,13 @@ else
 end
 
 % Add responsibilities
-qZ = rand(N, M) + 10;qZ= qZ./repmat(sum(qZ,2),1,M);
-logqZ = log(qZ);logqZ=logqZ-logqZ(:,1)*ones(1,M);logqZ = logqZ(:,2:end);
-loghyper = [loghyper; zeros(M-1,1); noisepower;logqZ(:)];
+qZ = rand(N, M) + 10;
+qZ= qZ./repmat(sum(qZ,2),1,M);
+logqZ = log(qZ);
+logqZ=logqZ-logqZ(:,1)*ones(1,M);
+logqZ = logqZ(:,2:end);
+loghyper = [loghyper; zeros(M-1,1); 
+    noisepower;logqZ(:)];
 
 % --- Iterate EM updates
 F_old = inf;convergence=[];
