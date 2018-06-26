@@ -55,7 +55,8 @@ else
 end
 
 % Add responsibilities
-qZ = rand(N, M) + 10;
+qZ = xlsread('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/qZ.xlsx')
+%qZ = rand(N, M) + 10;
 qZ= qZ./repmat(sum(qZ,2),1,M);
 logqZ = log(qZ);
 logqZ=logqZ-logqZ(:,1)*ones(1,M);

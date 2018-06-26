@@ -6,11 +6,11 @@ import warnings
 
 from test import *
 # External modules
-#from omgpEinc import *
 #from omgpbound import *
 #from minimize import *
 from covSEiso import *
 from covNoise import *
+from omgpEinc import *
 
 
 #omgpA -> nargin = 5, nargout = 6, called first from test:omgp
@@ -47,32 +47,39 @@ def omgpA(covfunc, M, X, Y, Xs):
     noisepower = 0.5 * np.log(1/8) * np.ones((M, 1))
 
     loghyper = np.array(())
-    for function in covfunc:
+    if covfunc.shape != (1,1):
+        covfunc_array = np.squeeze(np.asarray(covfunc))
+    else:
+        covfunc_array = covfunc
+    for function in covfunc_array:
         if function == covNoiseCM or function == covNoiseTSC or function == covNoiseDERIV:
             loghyper = loghyper + covpower
         elif function == covSEisoCM or function == covSEisoTSC or function == covSEisoDERIV:
             loghyper = np.append(loghyper, lengthscale)
             loghyper = np.append(loghyper, covpower)
         else:
-            raise Warning('Covariance type not supported')
-
+            raise Warning('Covariance type not (yet) supported')
     # Add responsibilities
-    qZ = np.random.rand(N, M) + 10
-    print_matrix(npm.repmat(qZ.sum(axis = 1),M,1).conj().transpose())
-    qZ = np.divide(qZ, npm.repmat(qZ.sum(axis = 1),M,1).conj().transpose())
+ #   qZ = np.random.rand(N, M) + 10
+    qZ = read_matrix('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/qZ')
+
+#   print_matrix(npm.repmat(qZ.sum(axis = 1),M,1).conj().transpose(), 'random')
+#   print_matrix(npm.repmat(qZ2.sum(axis = 1),1,M), 'nonrandom')
+
+    #qZ = np.divide(qZ, npm.repmat(qZ.sum(axis = 1),M,1).conj().transpose())
+    qZ = np.divide(qZ, npm.repmat(qZ.sum(axis = 1),1,M))
     logqZ = np.log(qZ)
-    logqZ = logqZ - np.matmul(np.matrix((logqZ [:,0])).conj().transpose(), np.ones((1, M)))
+    logqZ = logqZ - np.matmul(np.matrix((logqZ [:,0])), np.ones((1, M))) #np.matrix(()).conj().transpose()
     logqZ = logqZ[:,1:]
-    print_matrix(np.zeros((M - 1, 1)), 'zeros')
-    print_matrix(noisepower, 'noisepower')
-    print_matrix(logqZ[:],'logqZ')
-    print(np.zeros((M - 1, 1)).shape)
-    print(noisepower.shape)
-    print(logqZ[:].shape)
-    loghyper = loghyper + np.zeros((M - 1, 1)) + noisepower +logqZ[:]
+ #  loghyper = loghyper.conj().transpose()
+
+    loghyper = np.append(loghyper, np.zeros((M - 1, 1)))
+    loghyper = np.append(loghyper, noisepower)
+    loghyper = np.append(loghyper, logqZ.flatten('F').conj().transpose())
 
     # Iterate EM updates
-    F_old = inf
+    F_old = np.inf
+
     convergence = []
     for iter_variable in range(maxiter):
         [loghyper, conv1] = omgpEinc(loghyper, covfunc, M, X, Y)
