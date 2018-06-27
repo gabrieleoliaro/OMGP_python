@@ -93,7 +93,8 @@ def minimize(loghyper, f, length, learn, covfunc, M, X, Y):
 
     i = 0                                           # Run length counter, initialized to zero
     ls_failed = 0                                  # No previous line search has failed
-    [f0, df0] = f(loghyper, learn, covfunc, M, X, Y)                          # Get function value and gradient
+    if f == 'omgpbound':
+        [f0, df0] = omgpboundA(loghyper, learn, covfunc, M, X, Y)                          # Get function value and gradient
     loghyper =2
     conv2=3
     return [loghyper, conv2]

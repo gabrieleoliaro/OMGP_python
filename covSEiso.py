@@ -30,6 +30,7 @@ def covSEisoCM(loghyper, x):
 
     # Compute Covariance Matrix
     A = sf2 * np.exp(-sq_distONE(x.conj().transpose() / ell) / 2)
+    
     return A
 
 def covSEisoTSC(loghyper, x, z):
@@ -58,7 +59,8 @@ def covSEisoTSC(loghyper, x, z):
     # Compute Test Set Covariances
     A = sf2 * np.ones(z.shape[0], 1)
     B = sf2 * np.exp(-sq_distTWO(x.conj().transpose() / ell, z.conj().transpose() / ell) / 2)
-    
+
+    return [A, B]
 
 def covSEisoDERIV(loghyper, x, z):
     """
@@ -88,4 +90,5 @@ def covSEisoDERIV(loghyper, x, z):
         A = sf2 * np.multiply(np.exp(-sq_distONE(x.conj().transpose() / ell) / 2), sq_distONE(x.conj().transpose() / ell))
     else:                                   # Second parameter
         A = 2 * sf2 * np.exp(-sq_distONE(x.conj().transpose() / ell) / 2)
+    return A
         

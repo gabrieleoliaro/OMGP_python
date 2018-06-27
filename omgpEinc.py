@@ -73,10 +73,10 @@ def omgpEinc(loghyper, covfunc, M, X, Y):
 
             diagSigma = (np.diag(K) - np.power(np.matmul(U, K), 2).sum(axis=0).conj().transpose())[:, 0]
             mu = np.matmul(K, alpha)
-            prova = np.multiply(np.divide(-0.5, sn2[:,m]), (np.power((Y - mu), 2).sum(axis=1) + np.multiply(oD, diagSigma))).conj().transpose()
-            a = a.conj().transpose()
-            a[m] = prova
-            a = a.conj().transpose()
+            #a = a.conj().transpose()
+            #a[m] = np.multiply(np.divide(-0.5, sn2[:,m]), (np.power((Y - mu), 2).sum(axis=1) + np.multiply(oD, diagSigma))).conj().transpose()
+            #a = a.conj().transpose()
+            a[:, m] = (np.multiply(np.divide(-0.5, sn2[:,m]), (np.power((Y - mu), 2).sum(axis=1) + np.multiply(oD, diagSigma))).conj().transpose()).flatten('F')
             
             hypstart = hypstart + numhyp
 

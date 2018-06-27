@@ -7,11 +7,10 @@ import warnings
 from test import *
 # External modules
 #from omgpbound import *
-#from minimize import *
+from minimize import *
 from covSEiso import *
 from covNoise import *
 from omgpEinc import *
-from minimize import *
 
 
 #omgpA -> nargin = 5, nargout = 6, called first from test:omgp
@@ -86,18 +85,18 @@ def omgpA(covfunc, M, X, Y, Xs):
         [loghyper, conv1] = omgpEinc(loghyper, covfunc, M, X, Y)
         print('Bound after E-step is %.4f\n' % (conv1[-1]))
         [loghyper, conv2] = minimize(loghyper, 'omgpbound', 10, 'learnhyp', covfunc, M, X, Y)
-        convergence = np.concatenate((conv1, conv2))
-        F = convergence[-1]
-        if np.abs(F - F_old) < np.abs(F_old) * (10 ** -6):
-            break
-    
-        F_old = F
-    if iter_variable is maxiter:
-        print('Maximum number of iterations exceeded')
-
-    # Final pass, also updating pi0
-    [loghyper, conv] = minimize(loghyper, 'omgpbound', 20, 'learnall', covfunc, M, X, Y)
-    F = conv[-1]
+##        convergence = np.concatenate((conv1, conv2))
+##        F = convergence[-1]
+##        if np.abs(F - F_old) < np.abs(F_old) * (10 ** -6):
+##            break
+##    
+##        F_old = F
+##    if iter_variable is maxiter:
+##        print('Maximum number of iterations exceeded')
+##
+##    # Final pass, also updating pi0
+##    [loghyper, conv] = minimize(loghyper, 'omgpbound', 20, 'learnall', covfunc, M, X, Y)
+##    F = conv[-1]
 ##    loghyperinit = [loghyper[1 : -N * (M - 1) - 2 * M + 1]
 ##    loghyper[-N * (M - 1) - M : -N * (M - 1)]
 ##

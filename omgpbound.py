@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
 import numpy as np
+from covSEiso import *
+from covNoise import *
+from test import *
 
 # TODO: replace A, B, C, ... with number of params required
 #A-> nargin=6, nargout=2
@@ -77,26 +80,26 @@ def omgpboundA(loghyper, learn, covfunc, M, X, Y):
         np.fill_diagonal(diag_sqB, sqB[:, m])
         U = np.linalg.solve(R.conj().transpose(), diag_sqB)
         alpha = np.matmul(U.conj().transpose(), v)
-        diagW = np.power((Y - np.matmul(K, alpha)), 2).sum(axis=1) + oD * (np.diag(K) - np.power(np.matmul(U, K), 2).sum(axis=0).conj().transpose())
         
-        if learn is not 'learnqZ':
+        diagW = (np.power((Y - np.matmul(K, alpha)), 2).sum(axis=1) + oD * (np.diag(K) - np.power(np.matmul(U, K), 2).sum(axis=0).conj().transpose()))[:,0]
+  
+        
+        if learn != 'learnqZ':
             W = oD * np.matmul(U.conj().transpose(), U) - np.matmul(alpha, alpha.conj().transpose())                # precompute for convenience
             for i in range(numhyp):
                 if cm == 'covNoise':
-                    dF[i + hypstart-1] = dF[i + hypstart - 1] + np.multiply(W, covNoiseDERIV(loghyper[hypstart : hypstart + numhyp - 1], X, i)).sum() / 2
+                    dF[i + hypstart - 1] = dF[i + hypstart - 1] + np.multiply(W, covNoiseDERIV(loghyper[hypstart -1 : hypstart + numhyp - 1], X, i+1)).sum() / 2
                 elif cm == 'covSEiso':
-                    dF[i + hypstart-1] = dF[i + hypstart - 1] + np.multiply(W, covSEisoDERIV(loghyper[hypstart : hypstart + numhyp - 1], X, i)).sum() / 2
+                    dF[i + hypstart - 1] = dF[i + hypstart - 1] + np.multiply(W, covSEisoDERIV(loghyper[hypstart -1 : hypstart + numhyp - 1], X, i+1)).sum() / 2
                 else:
                     raise Warning('Covariance type not (yet) supported')
-                
-                
-            dF(end-N*(M-1)-M+m) = diagW'*qZ(:,m)*exp(-2*loghyper(end-N*(M-1)-M+m))*-2/2; % diagW * dB/dsn2
+            dF[- N * (M - 1) - M + m] = diagW.conj().transpose() * qZ[:, m] * np.exp(-2 * loghyper[- N * (M - 1) - M + m]) * -2 / 2 # diagW * dB/dsn2
 
-        if ~strcmp(learn, 'learnhyp')
-                dlogqZ(:,m) = diagW./sn2(:,m)/2;
+        if learn != 'learnhyp':
+            dlogqZ[:, m] = (np.divide(diagW, sn2[:, m]) / 2).flatten('F')
+        
 
-
-        hypstart = hypstart + numhyp;
+        hypstart = hypstart + numhyp
 
     if (hypstart + 2 * M + N * (M - 1) - 2) != len(loghyper):
             raise Warning('Incorrect number of parameters')
@@ -104,4 +107,15 @@ def omgpboundA(loghyper, learn, covfunc, M, X, Y):
     KLZ = np.multiply(qZ, (logqZ - logpZ)).sum() # KL Divergence from the posterior to the prior on Z
     F = F + oD / 2 * (np.multiply(qZ, np.log(2 * np.pi * sn2))).sum() + KLZ
 
-        
+    if learn != 'learnhyp':
+        dKLZlogpz = (-qZ + np.exp(logpZ)).sum(axis=0).conj().transpose()
+        dF[-N * (M - 1) -2 * M + 1 : -N * (M - 1) - M] = dKLZlogpz[1 : ].flatten('K')  # Derivative wrt pZ
+        dlogqZ = dlogqZ + logqZ - logpZ + oD / 2 * np.log(2 * np.pi * sn2) # Derivative wrt qZ
+        dlogqZ = np.multiply(qZ, (dlogqZ - np.matmul(np.multiply(qZ, dlogqZ).sum(axis=1), np.ones((1, M))))) # Derivative wrt actual hyperparam "beta" defnining qZ
+        dlogqZ = dlogqZ[:, 1:]
+        dF[-N * (M - 1) : ] = dlogqZ.flatten('K')
+    
+    if learn != 'learnqZ':
+        dF[-N * (M - 1) - M : -N * (M - 1)] = dF[-N * (M - 1) - M : -N * (M - 1)].flatten('K') + (oD / 2 * ((qZ * 2).sum(axis=0)).conj().transpose()).flatten('K') #Derivative wrt sn2
+    
+    return [F, dF]
