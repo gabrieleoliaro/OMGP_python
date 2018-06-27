@@ -39,24 +39,26 @@ def omgpEinc(loghyper, covfunc, M, X, Y):
         covfunc_array = np.asarray(covfunc)
         cm = covfunc_array.item(0)
 
-        if (cm == covNoiseCM) or (cm == covNoiseTSC) or (cm == covNoiseDERIV):
+        if cm == 'covNoise':
             numhyp = 1
-        elif (cm == covSEisoCM) or (cm == covSEisoTSC) or (cm == covSEisoDERIV):
+            K = covNoiseCM(loghyper[0 : numhyp], X)
+        elif cm == 'covSEiso':
             numhyp = 2
+            K = covSEisoCM(loghyper[0 : numhyp], X)
         else:
             raise Warning('Covariance type not (yet) supported')
         
-        K = cm(loghyper[0 : numhyp], X)
         for m in range(M):
             if len(covfunc_array) > 1:
-                    cm = covfunc_array.item(i)
-                    if (cm == covNoiseCM) or (cm == covNoiseTSC) or (cm == covNoiseDERIV):
-                        numhyp = 1
-                    elif (cm == covSEisoCM) or (cm == covSEisoTSC) or (cm == covSEisoDERIV):
-                        numhyp = 2
-                    else:
-                        raise Warning('Covariance type not (yet) supported')
-                    K = cm(loghyper[hypstart : hypstart + numhyp], X)
+                cm = covfunc_array.item(m)
+                if cm == 'covNoise':
+                    numhyp = 1
+                    K = covNoiseCM(loghyper[hypstart : hypstart + numhyp], X)
+                elif cm == 'covSEiso':
+                    numhyp = 2
+                    K = covSEisoCM(loghyper[hypstart : hypstart + numhyp], X)
+                else:
+                    raise Warning('Covariance type not (yet) supported')
             else:
                 hypstart = 1
 

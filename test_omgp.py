@@ -9,8 +9,8 @@ import numpy as np
 from test import *
 
 # External modules (Python files in the same folder)
-#from omgp_gen import *
-from omgp import *
+from omgp_gen import *
+#from omgp import *
 from covSEiso import *
 
 def test_omgp():
@@ -20,7 +20,7 @@ def test_omgp():
 
     # Number of time instants per GP, dimensions and GPs
 
-    n = 100
+    n = 20
     D = 2
     M = 3
 
@@ -32,7 +32,7 @@ def test_omgp():
 
     # Data generation and plotting
     loghyper = np.array([np.log(timescale), 0.5 * np.log(sigvar), 0.5 * np.log(noisevar)])
-    #[x, Y] = omgp_gen(loghyper, n, D, M)
+ #   [x, Y] = omgp_gen(loghyper, n, D, M)
     x = read_matrix('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/x')
     Y = read_matrix('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/Y')
     
@@ -50,11 +50,11 @@ def test_omgp():
     ax.set_xlabel('X Axis')
     ax.set_ylabel('Y Axis')
     ax.set_zlabel('Z Axis')
-    #plt.show()
+    plt.show()
 
     # OMGP tracking and plotting
-    covfunc = np.matrix((covSEisoCM))     # Same type of covariance function for every GP in the model
-    [F, qZ, loghyperinit, mu, C, pi0] = omgpA(covfunc, M, x_train, Y_train, x_test)
+    covfunc = np.matrix(('covSEiso'))     # Same type of covariance function for every GP in the model
+ #   [F, qZ, loghyperinit, mu, C, pi0] = omgpA(covfunc, M, x_train, Y_train, x_test)
     #print(pi0)
     #[NMSE, NLPD] = quality(Y_test, mu, C, pi0)
     

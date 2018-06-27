@@ -11,6 +11,7 @@ from test import *
 from covSEiso import *
 from covNoise import *
 from omgpEinc import *
+from minimize import *
 
 
 #omgpA -> nargin = 5, nargout = 6, called first from test:omgp
@@ -52,9 +53,9 @@ def omgpA(covfunc, M, X, Y, Xs):
     else:
         covfunc_array = covfunc
     for function in covfunc_array:
-        if function == covNoiseCM or function == covNoiseTSC or function == covNoiseDERIV:
+        if function == 'covNoise':
             loghyper = loghyper + covpower
-        elif function == covSEisoCM or function == covSEisoTSC or function == covSEisoDERIV:
+        elif function == 'covSEiso':
             loghyper = np.append(loghyper, lengthscale)
             loghyper = np.append(loghyper, covpower)
         else:
