@@ -85,6 +85,9 @@ def omgpA(covfunc, M, X, Y, Xs):
         [loghyper, conv1] = omgpEinc(loghyper, covfunc, M, X, Y)
         print('Bound after E-step is %.4f\n' % (conv1[-1]))
         [loghyper, conv2] = minimize(loghyper, 'omgpbound', 10, 'learnhyp', covfunc, M, X, Y)
+        print_matrix(loghyper, 'loghyper')
+        print_matrix(conv2, 'conv2')
+        print()
 ##        convergence = np.concatenate((conv1, conv2))
 ##        F = convergence[-1]
 ##        if np.abs(F - F_old) < np.abs(F_old) * (10 ** -6):
