@@ -88,7 +88,7 @@ def omgpA(covfunc, M, X, Y, Xs):
  
         convergence = np.concatenate((conv1, conv2))
         F = convergence[-1]
-        if np.abs(F - F_old) < np.abs(F_old) * (1e-5):
+        if np.abs(F - F_old) < np.abs(F_old) * (1e-6):
             break
     
         F_old = F
