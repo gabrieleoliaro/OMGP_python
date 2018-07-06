@@ -53,11 +53,11 @@ def sq_distTWO(a, b):
     if d != D:
         raise ValueError("Error: column lengths must agree.")
 
-    mu = (m / (n + m)) * mean(b, axis=1) + (n / (n + m)) * mean(a, axis=1)
+    mu = (m / (n + m)) * np.mean(b, axis=1) + (n / (n + m)) * np.mean(a, axis=1)
     a = a - mu
     b = b - mu
 
-    C = np.sum(a * a, 0).conj().transpose() + (np.sum(b * b, 0) - 2 * a.conj().transpose() * b)
+    C = np.sum(np.multiply(a, a), 0).conj().transpose() + (np.sum(np.multiply(b, b), 0) - 2 * a.conj().transpose() * b)
     C = np.maximum(C,0)                 # Numerical noise can cause C to negative i.e. C > -1e-14
         
     return C

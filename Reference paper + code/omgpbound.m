@@ -21,7 +21,9 @@ logqZ = [zeros(N,1) reshape(loghyper(end-N*(M-1)+1:end),N,M-1)];
 logqZ = logqZ - max(logqZ,[],2)*ones(1,M);logqZ = logqZ-log(sum(exp(logqZ),2))*ones(1,M);qZ=exp(logqZ);
 sn2 = ones(N,1)*exp(2*loghyper(end-N*(M-1)-M+1:end-N*(M-1)))';
 logpZ = [0; loghyper(end-N*(M-1)-2*M+2:end-N*(M-1)-M)]'; 
-logpZ = logpZ - max(logpZ);logpZ = logpZ-log(sum(exp(logpZ)));logpZ = ones(N,1)*logpZ;
+logpZ = logpZ - max(logpZ);
+logpZ = logpZ-log(sum(exp(logpZ)));
+logpZ = ones(N,1)*logpZ;
 sqB = sqrt(qZ./sn2);
 dlogqZ = zeros(N,M);
 
@@ -48,6 +50,9 @@ for m = 1:M
             if ~strcmp(learn, 'learnqZ')
                 W = oD*(U'*U)-alpha*alpha';                % precompute for convenience
                 for i = 1:numhyp
+                    if strcmp('learnall', learn) && m==1
+                        disp('');
+                    end
                     dF(i+hypstart-1) = dF(i+hypstart-1) + sum(sum(W.*feval(cm{:}, loghyper(hypstart:hypstart+numhyp-1), X, i)))/2;
                 end
                 dF(end-N*(M-1)-M+m) = diagW'*qZ(:,m)*exp(-2*loghyper(end-N*(M-1)-M+m))*-2/2; % diagW * dB/dsn2

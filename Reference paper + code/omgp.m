@@ -56,7 +56,7 @@ end
 
 % Add responsibilities
 qZ = xlsread('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/qZ.xlsx')
-%qZ = rand(N, M) + 10;
+% qZ = rand(N, M) + 10;
 qZ= qZ./repmat(sum(qZ,2),1,M);
 logqZ = log(qZ);
 logqZ=logqZ-logqZ(:,1)*ones(1,M);
@@ -71,7 +71,7 @@ for iter= 1:maxiter
     fprintf(1,'Bound after E-step is %.4f\n',conv1(end))
     [loghyper, conv2] = minimize(loghyper, 'omgpbound', 10, 'learnhyp', covfunc, M, X, Y);
     convergence = [conv1;conv2;];F=convergence(end);
-    if abs(F-F_old)<abs(F_old)*1e-6
+    if abs(F-F_old)<abs(F_old)*1e-5
         break
     end
     F_old=F;
@@ -88,7 +88,8 @@ logqZ= [zeros(N,1) reshape(loghyper(end-N*(M-1)+1:end),N,M-1)];
 qZ = exp(logqZ - max(logqZ,[],2)*ones(1,M));qZ = qZ./(sum(qZ,2)*ones(1,M));
 
 logpZ = [0; loghyper(end-N*(M-1)-2*M+2:end-N*(M-1)-M)]'; 
-logpZ = logpZ - max(logpZ);logpZ = logpZ-log(sum(exp(logpZ)));pi0 = exp(logpZ);
+logpZ = logpZ - max(logpZ);
+logpZ = logpZ-log(sum(exp(logpZ)));pi0 = exp(logpZ);
 
 % --- Make predictions
 if nargin > 4 % There is also test data

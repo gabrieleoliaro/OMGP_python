@@ -49,9 +49,15 @@ pi0
 
 [nada, label] = max(qZ,[],2);
 figure
+
 colors = get(gcf,'DefaultAxesColorOrder');
 for c = 1:M
     plot3(x_train(label==c),Y_train(label==c,1),Y_train(label==c,2),'color',colors(mod(c+1,7)+1,:),'marker','x','linestyle','none');
     hold on
     plot3(x_test,mu(:,1,c),mu(:,2,c),'color',colors(mod(c+1,7)+1,:));
 end
+xlabel('X Axis')
+ylabel('Y Axis')
+zlabel('Z Axis')
+view([5,3,2])
+grid on

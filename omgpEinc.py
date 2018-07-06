@@ -2,6 +2,7 @@
 import numpy as np
 from covNoise import *
 from covSEiso import *
+from test import *
 
 def omgpEinc(loghyper, covfunc, M, X, Y):
     """
@@ -65,10 +66,14 @@ def omgpEinc(loghyper, covfunc, M, X, Y):
             R = (np.linalg.cholesky(np.eye(N) + np.multiply(K, np.matmul(sqB[:, m], sqB[:, m].conj().transpose())))).conj().transpose()
             sqBY = np.multiply(np.matmul(sqB[:, m], np.ones((1, oD))), Y)
             v = np.linalg.solve(R.conj().transpose(), sqBY)
+            if not np.allclose(np.dot(R.conj().transpose(), v), sqBY):
+                raise Warning(" linalg.solve not successful")
             oldF = oldF + 0.5 * np.power(v, 2).sum() + oD * np.log(np.diag(R)).sum(axis=0)
             diag_sqB = np.zeros((N, N))
             np.fill_diagonal(diag_sqB, sqB[:, m])
             U = np.linalg.solve(R.conj().transpose(), diag_sqB)
+            if not np.allclose(np.dot(R.conj().transpose(), U), diag_sqB):
+                raise Warning(" linalg.solve not successful")
             alpha = np.matmul(U.conj().transpose(), v)
 
             diagSigma = (np.diag(K) - np.power(np.matmul(U, K), 2).sum(axis=0).conj().transpose())[:, 0]
@@ -95,7 +100,7 @@ def omgpEinc(loghyper, covfunc, M, X, Y):
 
         qZ = np.exp(logqZ)
     
-        if (iter_variable + M > N) and (abs(oldF - oldFant) < abs(oldFant) * (10**-6)):
+        if (iter_variable + M > N) and (abs(oldF - oldFant) < abs(oldFant) * (1e-6)):
             break
         
         oldFant = oldF

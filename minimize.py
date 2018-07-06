@@ -95,6 +95,7 @@ def minimize(loghyper, f, length, learn, covfunc, M, X, Y):
     ls_failed = 0                                                       # No previous line search has failed
     if f == 'omgpbound':
         [f0, df0] = omgpboundA(loghyper, learn, covfunc, M, X, Y)       # Get function value and gradient
+        
     Z = loghyper
 
     print('%s %6i;  Value %4.6e' % (S, i, f0))
@@ -103,7 +104,7 @@ def minimize(loghyper, f, length, learn, covfunc, M, X, Y):
 
     s = -df0
     d0 = np.matmul(-s.conj().transpose(), s)                            # initial search direction (steepest) and slope
-    x3 = red / (1 - d0)                                                 # initial step is red/(|s|+1)
+    x3 = np.divide(red, (np.subtract(1, d0)))                                                 # initial step is red/(|s|+1)
 
     while i < abs(length):                                              # while not finished
         i = i + (length > 0)                                            # count iterations?!
@@ -129,20 +130,20 @@ def minimize(loghyper, f, length, learn, covfunc, M, X, Y):
                     m = m - 1
                     i = i + (length < 0)                                    # count epochs?!
                     if f == 'omgpbound':
-                        [f3, df3] = omgpboundA((loghyper + np.multiply(x3, s)), learn, covfunc, M, X, Y)
+                        [f3, df3] = omgpboundA(np.add(loghyper, np.multiply(x3, s)), learn, covfunc, M, X, Y)
                         
                     if np.isnan(f3) or np.isinf(f3) or np.any(np.isnan(df3) + np.isinf(df3)):
                         raise Warning('')
                     success = 1
                 except:                                                     # catch any error which occured in f
-                    x3 = (x2 + x3) / 2                                      # bisect and try again
+                    x3 = np.divide((x2 + x3), 2)                                      # bisect and try again
     
             if f3 < F0:                                                     # keep best values
-                X0 = loghyper + np.multiply(x3, s)
+                X0 = np.add(loghyper, np.multiply(x3, s))
                 F0 = f3
                 dF0 = df3
             d3 = np.matmul(df3.conj().transpose(), s)                      # new slope
-            if d3 > SIG * d0 or f3 > f0 + x3 * RHO * d0 or m == 0:          # are we done extrapolating?
+            if d3 > np.multiply(SIG, d0) or f3 > np.add(f0, np.multiply(np.multiply(x3, RHO), d0)) or m == 0:          # are we done extrapolating?
                 break 
       
             # Move point 2 to point 1
@@ -156,18 +157,27 @@ def minimize(loghyper, f, length, learn, covfunc, M, X, Y):
             d2 = d3
 
             # Make cubic extrapolation
-            A = 6 * (f1 - f2) + 3 * (d2 + d1) * (x2 - x1)
-            B = 3 * (f2 - f1) - (2 * d1 + d2) * (x2 - x1)
-            x3 = x1 - d1 * np.power((x2 - x1), 2) / (B + np.sqrt(B * B - A * d1 * (x2 - x1)))    # num. error possible, ok!
-            if not np.isreal(x3) or np.isnan(x3) or np.isinf(x3) or x3 < 0:            # num prob | wrong sign?
-                x3 = x2 * EXT                                                       # extrapolate maximum amount
-            elif x3 > x2 * EXT:                                             # new point beyond extrapolation limit?
-                x3 = x2 * EXT                                               # extrapolate maximum amount
-            elif x3 < x2 + INT * (x2 - x1):                                 # new point too close to previous point?
-                x3 = x2 + INT * (x2 - x1)
+            A = np.add(np.multiply(6, np.subtract(f1, f2)), np.multiply(np.multiply(3, np.add(d2, d1)), np.subtract(x2, x1)))
+            B = np.subtract(np.multiply(3, np.subtract(f2, f1)), np.multiply(np.add(np.multiply(2, d1), d2), np.subtract(x2, x1)))
+            
 
-        while (abs(d3) > - SIG * d0 or f3 > f0 + x3 * RHO * d0) and m > 0:  # keep interpolating
-            if d3 > 0 or f3 > f0 + x3 * RHO * d0:                           # choose subinterval
+            Z = B + np.sqrt(complex(np.subtract(np.multiply(B, B), np.multiply(np.multiply(A, d1), np.subtract(x2, x1)))))
+            if Z != 0.0:
+                x3 = np.subtract(x1, np.divide(np.multiply(d1, np.power(np.subtract(x2, x1), 2)), Z))              # num. error possible, ok!
+            else: 
+                x3 = np.inf
+
+            
+            if not np.isreal(x3) or np.isnan(x3) or np.isinf(x3) or x3 < 0:            # num prob | wrong sign?
+                x3 = np.multiply(x2, EXT)                                                       # extrapolate maximum amount
+            elif x3 > np.multiply(x2, EXT):                                             # new point beyond extrapolation limit?
+                x3 = np.multiply(x2, EXT)                                              # extrapolate maximum amount
+            elif x3 < np.add(x2, np.multiply(INT, np.subtract(x2, x1))):                                 # new point too close to previous point?
+                x3 = np.add(x2, np.multiply(INT, np.subtract(x2, x1)))
+            x3 = np.real(x3)
+
+        while (np.abs(d3) > - np.multiply(SIG, d0) or f3 > np.add(f0, np.multiply(x3, np.multiply(RHO, d0)))) and m > 0:  # keep interpolating
+            if d3 > 0 or f3 > np.add(f0, np.multiply(x3, np.multiply(RHO, d0))):                           # choose subinterval
                 # Move point 3 to point 4
                 x4 = x3
                 f4 = f3
@@ -179,19 +189,23 @@ def minimize(loghyper, f, length, learn, covfunc, M, X, Y):
                 d2 = d3
     
             if f4 > f0:
-                x3 = x2 - (0.5 * d2 * np.power((x4 - x2), 2)) / (f4 - f2 - d2 * (x4 - x2))    # quadratic interpolation
+                x3 = np.subtract(x2, np.divide((np.multiply(0.5, np.multiply(d2, np.power(np.subtract(x4, x2), 2)))), (np.subtract(np.subtract(f4, f2), np.multiply(d2, np.subtract(x4, x2))))))    # quadratic interpolation
             else:
-                A = 6 * (f2 - f4) / (x4 - x2) + 3 * (d4 + d2)                       # cubic interpolation
-                B = 3 * (f4 - f2) - (2 * d2 + d4) * (x4 - x2)
-                x3 = x2 + (np.sqrt(B * B - A * d2 * np.power((x4 - x2), 2)) - B) / A           # num. error possible, ok!
+                A = np.add(np.divide(np.multiply(6, np.subtract(f2, f4)), np.subtract(x4, x2)), np.multiply(3, np.add(d4, d2)))                        # cubic interpolation
+                B = np.subtract(np.multiply(3, np.subtract(f4, f2)), np.multiply((np.add(np.multiply(2,d2), d4)), np.subtract(x4, x2)))
+                if A != 0:
+                    x3 = np.add(x2, np.divide(np.subtract(np.sqrt(np.subtract(np.multiply(B,B), np.multiply(A, np.multiply(d2, np.power(np.subtract(x4,x2), 2))))), B), A))
+                                                     # num. error possible, ok!
+                else:
+                    x3 = np.inf
     
             if np.isnan(x3) or np.isinf(x3):
-                x3 = (x2 + x4) / 2                                          # if we had a numerical problem then bisect
-            x3 = max(min(x3, x4 - INT * (x4 - x2)), x2 + INT * (x4 - x2))   # don't accept too close
+                x3 = np.divide(np.add(x2, x4), 2)                                          # if we had a numerical problem then bisect
+            x3 = max(min(x3, np.subtract(x4, np.multiply(INT, np.subtract(x4, x2)))), np.add(x2, np.multiply(INT, np.subtract(x4, x2))))   # don't accept too close
             [f3, df3] = omgpboundA((loghyper + np.multiply(x3, s)), learn, covfunc, M, X, Y)
             if f3 < F0:
                 # keep best values
-                X0 = loghyper + np.multiply(x3, s)
+                X0 = np.add(loghyper, np.multiply(x3, s))
                 F0 = f3
                 dF0 = df3 
             m = m - 1
@@ -200,20 +214,19 @@ def minimize(loghyper, f, length, learn, covfunc, M, X, Y):
         # end interpolation
 
         
-
-        if abs(d3) < -SIG * d0 and f3 < f0 + x3 * RHO * d0:                 # if line search succeeded
-            loghyper = loghyper + np.multiply(x3, s)
+        if (np.abs(d3) < -np.multiply(SIG, d0) and f3 < np.add(f0, np.multiply(x3, np.multiply(RHO, d0)))):                 # if line search succeeded
+            loghyper = np.add(loghyper, np.multiply(x3, s))
             f0 = f3
             fX = np.insert(fX, fX.shape[0], f0,axis=0)                                           # update variables
-            print('%s %6i;  Value %4.6e' % (S, i, f0))
-            s = np.multiply(np.divide(np.matmul(df3.conj().transpose(), df3) - np.matmul(df0.conj().transpose(), df3), np.matmul(df0.conj().transpose(), df0)), s) - df3    # Polack-Ribiere CG direction
+            print('%s %6i;  Value %4.8e' % (S, i, f0))
+            s = np.subtract(np.multiply(np.divide(np.subtract(np.matmul(df3.conj().transpose(), df3), np.matmul(df0.conj().transpose(), df3)), np.matmul(df0.conj().transpose(), df0)), s), df3)    # Polack-Ribiere CG direction
             df0 = df3                                                       # swap derivatives
             d3 = d0
             d0 = np.matmul(df0.conj().transpose(), s)
             if d0 > 0:                                                      # new slope must be negative
                 s = -df0
                 d0 = np.matmul(-s.conj().transpose(), s)                    # otherwise use steepest direction
-            x3 = x3 * min(RATIO, d3 / (d0 - np.finfo(np.double).tiny))                       # slope ratio but max RATIO
+            x3 = np.multiply(x3, min(RATIO, np.divide(d3, (np.subtract(d0, np.finfo(np.double).tiny)))))                       # slope ratio but max RATIO
             ls_failed = 0                                                   # this line search did not fail
         else:
             # Restore best point so far
@@ -224,7 +237,7 @@ def minimize(loghyper, f, length, learn, covfunc, M, X, Y):
                 break                                                     # or we ran out of time, so we give up
             s = -df0
             d0 = np.matmul(-s.conj().transpose(), s)                        # try steepest
-            x3 = 1 / (1 - d0)                     
+            x3 = np.divide(1, (np.subtract(1, d0)))                     
             ls_failed = 1                                                   # this line search failed
 
     return [loghyper, fX]
