@@ -19,9 +19,9 @@ def test_omgp():
 
     # Number of time instants per GP, dimensions and GPs
 
-    n = 100
+    n = 500
     D = 3
-    M = 5
+    M = 4
 
 
     # Tunable hyperparameters
@@ -51,6 +51,7 @@ def test_omgp():
     ax.set_xlabel('X Axis')
     ax.set_ylabel('Y Axis')
     ax.set_zlabel('Z Axis')
+    ax.view_init(elev=20, azim=30) #Works!
     plt.show()
 
     # OMGP tracking and plotting
