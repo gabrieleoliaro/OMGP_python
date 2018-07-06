@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import sys
 import numpy as np
 from omgpbound import *
 
@@ -218,7 +217,7 @@ def minimize(loghyper, f, length, learn, covfunc, M, X, Y):
             loghyper = np.add(loghyper, np.multiply(x3, s))
             f0 = f3
             fX = np.insert(fX, fX.shape[0], f0,axis=0)                                           # update variables
-            print('%s %6i;  Value %4.8e' % (S, i, f0))
+            print('%s %6i;  Value %4.6e' % (S, i, f0))
             s = np.subtract(np.multiply(np.divide(np.subtract(np.matmul(df3.conj().transpose(), df3), np.matmul(df0.conj().transpose(), df3)), np.matmul(df0.conj().transpose(), df0)), s), df3)    # Polack-Ribiere CG direction
             df0 = df3                                                       # swap derivatives
             d3 = d0

@@ -94,22 +94,11 @@ def omgpboundA(loghyper, learn, covfunc, M, X, Y):
 
             
             for i in range(numhyp):
-##                if learn == 'learnall' and m==0:
-##                    print('BEFORE:')
-##                    print_matrix(dF, 'dfbefore')
-##                    print('dF[i + hypstart - 1]: %.15f' % dF[i + hypstart - 1])
-##                    print('sum: %.15f' % (np.multiply(W, covSEisoDERIV(loghyper[hypstart -1 : hypstart + numhyp - 1], X, i+1)).sum() / 2))
-##                    print('\n')
                 if cm == 'covNoise':
                     dF[i + hypstart - 1] = dF[i + hypstart - 1] + np.multiply(W, covNoiseDERIV(loghyper[hypstart -1 : hypstart + numhyp - 1], X, i+1)).sum() / 2
                 elif cm == 'covSEiso':
                     dF[i + hypstart - 1] = dF[i + hypstart - 1] + np.multiply(W, covSEisoDERIV(loghyper[hypstart -1 : hypstart + numhyp - 1], X, i+1)).sum() / 2
-##                    if learn == 'learnall' and m==0:
-##                        print('AFTER:')
-##                        print_matrix(dF, 'dfafter')
-##                        print('dF[i + hypstart - 1]: %.15f' % dF[i + hypstart - 1])
-##                        print('sum: %.15f' % (np.multiply(W, covSEisoDERIV(loghyper[hypstart -1 : hypstart + numhyp - 1], X, i+1)).sum() / 2))
-##                        print('\n')
+
                 else:
                     raise Warning('Covariance type not (yet) supported')
 

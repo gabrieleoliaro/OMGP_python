@@ -88,18 +88,9 @@ def covSEisoDERIV(loghyper, x, z):
     """
     [n, D] = np.shape(x)
     ell = np.exp(loghyper[0])                 # Characteristic length scale
-##    print('np.log(ell): %.14f' % np.log(ell))
-##    print('loghyper[0]: %.15f' % loghyper[0])
+
     
     sf2 = np.exp(2 * loghyper[1])             # Signal variance
-
-##    # Print all local variabels to file
-##    f = open("/Users/Gabriele/Desktop/Poli/OMGP_python/outputs/coveiso.csv", "w")
-##    w = csv.writer(f)
-##    local_variables = locals().copy()
-##    for key, value in local_variables.items():
-##        w.writerow([key, value])
-##    f.close()
     
 
     # Compute Derivative Matrix

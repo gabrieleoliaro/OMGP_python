@@ -4,7 +4,6 @@ import numpy as np
 import numpy.matlib as npm
 import warnings
 
-from test import *
 # External modules
 #from omgpbound import *
 from minimize import *
@@ -62,14 +61,14 @@ def omgpA(covfunc, M, X, Y, Xs):
         else:
             raise Warning('Covariance type not (yet) supported')
     # Add responsibilities
-#    qZ = np.random.rand(N, M) + 10
-    qZ = read_matrix('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/qZ')
+    qZ = np.random.rand(N, M) + 10
+#    qZ = read_matrix('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/qZ')
 
-#    qZ = np.divide(qZ, npm.repmat(qZ.sum(axis = 1),M,1).conj().transpose())
-    qZ = np.divide(qZ, npm.repmat(qZ.sum(axis = 1),1,M))
+    qZ = np.divide(qZ, npm.repmat(qZ.sum(axis = 1),M,1).conj().transpose())
+#    qZ = np.divide(qZ, npm.repmat(qZ.sum(axis = 1),1,M))
     logqZ = np.log(qZ)
     
-    logqZ = logqZ - np.matmul(np.matrix((logqZ [:,0])), np.ones((1, M))) #np.matrix(()).conj().transpose()
+    logqZ = logqZ - np.matmul(np.matrix((logqZ [:,0])).conj().transpose(), np.ones((1, M))) #np.matrix(()).conj().transpose()
     logqZ = logqZ[:,1:]
 
 
@@ -125,9 +124,9 @@ def omgpA(covfunc, M, X, Y, Xs):
     mu2 = np.ones((Ntst, 2, M))
     C1 = np.ones((Ntst, 2, M))
     for i in range(M):
-        mu1[:,:,i] = np.multiply(mu1[:,:,i], np.kron(np.ones((30,1)), meany))
-        mu2[:,:,i] = np.multiply(mu2[:,:,i], np.kron(np.ones((30,1)), (stdy + 1e-6)))
-        C1[:,:,i] = np.multiply(C1[:,:,i], np.kron(np.ones((30,1)), np.power((stdy + 1e-6), 2)))
+        mu1[:,:,i] = np.multiply(mu1[:,:,i], np.kron(np.ones((Ntst,1)), meany))
+        mu2[:,:,i] = np.multiply(mu2[:,:,i], np.kron(np.ones((Ntst,1)), (stdy + 1e-6)))
+        C1[:,:,i] = np.multiply(C1[:,:,i], np.kron(np.ones((Ntst,1)), np.power((stdy + 1e-6), 2)))
     
     mu = mu1 + np.multiply(mu, mu2)
     C = np.multiply(C, C1)

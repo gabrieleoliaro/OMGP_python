@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
 import numpy as np
-from test import *
-import csv
 
 def quality(Y, mu, C, pi0):
     [Ntst, D, M] = mu.shape

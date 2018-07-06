@@ -2,7 +2,6 @@
 import numpy as np
 from covNoise import *
 from covSEiso import *
-from test import *
 
 def omgpEinc(loghyper, covfunc, M, X, Y):
     """

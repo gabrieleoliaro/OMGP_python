@@ -7,9 +7,9 @@ close all
 
 % Number of time instants per GP, dimensions, and GPs
 
-n = 20;
+n = 50;
 D = 2;
-M = 3;
+M = 5;
 
 
 % Tunable hyperparameters
@@ -20,9 +20,9 @@ noisevar = 0.002;
 % Data generation and plotting
 close all
 loghyper = [log(timescale); 0.5*log(sigvar); 0.5*log(noisevar)];
-x = xlsread('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/x.xlsx')
-Y = xlsread('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/Y.xlsx')
-%[x, Y] = omgp_gen(loghyper, n, D, M);
+%x = xlsread('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/x.xlsx')
+%Y = xlsread('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/Y.xlsx')
+[x, Y] = omgp_gen(loghyper, n, D, M);
 
 x_train = x(1:2:end);
 Y_train = Y(1:2:end,:);

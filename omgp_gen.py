@@ -4,7 +4,6 @@ import numpy as np
 from covNoise import *
 from covSEiso import *
 from covSum import *
-from test import *
 
 def omgp_gen(loghyper, n, D, m):
     """
@@ -37,9 +36,10 @@ def omgp_gen(loghyper, n, D, m):
     # Make sure x is a column vector, and not a row vector
     if (x.shape[1] is not 1):
         x = x.conj().transpose()
-    
+    #print(x)
     order_X = ([i[0] for i in sorted(enumerate(x), key=lambda x:x[1])])
-    x = np.sort(x)
+    x.sort(0)
+    
     Y = Y[order_X, :]
     
     return [x, Y]

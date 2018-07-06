@@ -6,7 +6,6 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
-from test import *
 
 # External modules (Python files in the same folder)
 from omgp_gen import *
@@ -20,7 +19,7 @@ def test_omgp():
 
     # Number of time instants per GP, dimensions and GPs
 
-    n = 20
+    n = 100
     D = 2
     M = 3
 
@@ -32,9 +31,10 @@ def test_omgp():
 
     # Data generation and plotting
     loghyper = np.array([np.log(timescale), 0.5 * np.log(sigvar), 0.5 * np.log(noisevar)])
- #   [x, Y] = omgp_gen(loghyper, n, D, M)
-    x = read_matrix('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/x')
-    Y = read_matrix('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/Y')
+    [x, Y] = omgp_gen(loghyper, n, D, M)
+    
+    #x = read_matrix('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/x')
+    #Y = read_matrix('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/Y')
     
     x_train = x[::2]
     Y_train = Y[::2]
@@ -51,7 +51,7 @@ def test_omgp():
     ax.set_xlabel('X Axis')
     ax.set_ylabel('Y Axis')
     ax.set_zlabel('Z Axis')
- #   plt.show()
+    plt.show()
 
     # OMGP tracking and plotting
     covfunc = np.matrix(['covSEiso'])     # Same type of covariance function for every GP in the model
@@ -77,8 +77,6 @@ def test_omgp():
                 x_train_new = np.append(x_train_new, x_train[i])
                 Y_train0_new = np.append(Y_train0_new, Y_train[i, 0])
                 Y_train1_new = np.append(Y_train1_new, Y_train[i, 1])
-        print_matrix(mu[:, 0, c], 'mu[:, 0, c]%i' %c)
-        print_matrix(mu[:, 1, c], 'mu[:, 1, c]%i' %c)
         ax2.scatter(x_train_new, Y_train0_new, Y_train1_new, c='C%i'%c, marker='x')  # Add scattered points
         
 
