@@ -120,9 +120,9 @@ def omgpA(covfunc, M, X, Y, Xs):
     Ntst = Xs.shape[0]
     [mu, C] = omgpboundB(loghyper, 'learnall', covfunc, M, X, Y, Xs)
 
-    mu1 = np.ones((Ntst, 2, M))
-    mu2 = np.ones((Ntst, 2, M))
-    C1 = np.ones((Ntst, 2, M))
+    mu1 = np.ones((Ntst, oD, M))
+    mu2 = np.ones((Ntst, oD, M))
+    C1 = np.ones((Ntst, oD, M))
     for i in range(M):
         mu1[:,:,i] = np.multiply(mu1[:,:,i], np.kron(np.ones((Ntst,1)), meany))
         mu2[:,:,i] = np.multiply(mu2[:,:,i], np.kron(np.ones((Ntst,1)), (stdy + 1e-6)))

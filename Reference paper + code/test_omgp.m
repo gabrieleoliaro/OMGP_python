@@ -7,9 +7,9 @@ close all
 
 % Number of time instants per GP, dimensions, and GPs
 
-n = 50;
-D = 2;
-M = 5;
+n = 20;
+D = 3;
+M = 3;
 
 
 % Tunable hyperparameters
