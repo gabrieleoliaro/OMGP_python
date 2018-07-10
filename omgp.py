@@ -7,8 +7,7 @@ import warnings
 # External modules
 #from omgpbound import *
 from minimize import *
-from covSEiso import *
-from covNoise import *
+from covariance import *
 from omgpEinc import *
 
 

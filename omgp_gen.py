@@ -1,9 +1,8 @@
 #!/usr/bin/python
 
 import numpy as np
-from covNoise import *
-from covSEiso import *
-from covSum import *
+from covariance import *
+
 
 def omgp_gen(loghyper, n, D, m):
     """

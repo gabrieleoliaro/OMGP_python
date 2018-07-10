@@ -1,9 +1,8 @@
 #!/usr/bin/python
 
 import numpy as np
-from covSEiso import *
-from covNoise import *
-from test import *
+from covariance import *
+
 
 # TODO: replace A, B, C, ... with number of params required
 #A-> nargin=6, nargout=2

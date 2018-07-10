@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import numpy as np
-from covNoise import *
-from covSEiso import *
+from covariance import *
+
 
 def omgpEinc(loghyper, covfunc, M, X, Y):
     """
