@@ -20,7 +20,7 @@ def test_omgp():
     # Number of time instants per GP, dimensions and GPs
 
     n = 100
-    D = 3
+    D = 2
     M = 4
 
 
