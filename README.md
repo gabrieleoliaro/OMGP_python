@@ -12,7 +12,7 @@ It would also help to rewrite/refactor the code into OOP
 * `omgp_load.py` -- Used to generate random input or parse it from file. <br/>
 * `omgpbound.py` -- Allows you to computes the negative of the Marginalized Variational Bound (F) and its derivatives wrt loghyper (dF). <br/>
 * `omgpEinc.py` -- Performs the E-step.  <br/>
-* `parser.py` -- Draft of CSV parser for ROS log file coming from @ewerlopes player_tracker code. Eventually it will probably be included into the omgp_load file.  <br/>
+* `parser.py` -- Draft of CSV parser for ROS log file coming from [Ewerton Lopes](//github.com/ewerlopes)'s player_tracker code. Eventually it will probably be included into the omgp_load file.  <br/>
 * `quality.py` -- Computes NMSE and NLPD measures for test data. <br/>
 * `sq_dist.py` -- a function to compute a matrix of all pairwise squared distances
     between two sets of vectors, stored in the columns of the two matrices, a
