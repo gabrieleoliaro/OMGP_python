@@ -19,9 +19,9 @@ def test_omgp():
 
     # Number of time instants per GP, dimensions and GPs
 
-    n = 100
+    n = 75
     D = 2
-    M = 4
+    M = 6
 
 
     # Tunable hyperparameters
