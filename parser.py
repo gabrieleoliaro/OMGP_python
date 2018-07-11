@@ -21,12 +21,17 @@ def parse(filename, max_window=np.inf):
     f_in = open(filename, 'r')
     reader = csv.reader(f_in, delimiter=",")
 
+    additional_offset = 0
+    offset = 0
     for i, line in enumerate(reader):
         if line == ['--']:
             window_counter += 1
+            offset += additional_offset + 1
+            additional_offset = 0
         elif line != []:
+            additional_offset = max(additional_offset, int(line[1]))
             if len(cluster_indexes) > int(line[0]) + 1:                         # There's already an element of number line[0]+1 in x, so you can insert line[1] right before it
-                x = np.insert(x, cluster_indexes[int(line[0])+1], int(line[1]) + window_counter)
+                x = np.insert(x, cluster_indexes[int(line[0])+1], int(line[1]) + offset)
                 Y = np.insert(Y, cluster_indexes[int(line[0]) + 1], float(line[2]))
                 for index, element in enumerate(cluster_indexes):
                     if index >= int(line[0])+1:
@@ -34,7 +39,7 @@ def parse(filename, max_window=np.inf):
             else:                                                              # You can't insert line[1] right before the first element of number line[0]+1, because there's no such element
                 if int(line[0]) == len(cluster_indexes):                        # If this is the first element characterized by the current number, you have to save its address into cluster_indexes
                     cluster_indexes = np.append(cluster_indexes, len(x))
-                x = np.append(x, int(line[1]) + window_counter)
+                x = np.append(x, int(line[1]) + offset)
                 Y = np.append(Y, float(line[2]))
         if window_counter == max_window:
             break
@@ -67,10 +72,11 @@ def plot(x, Y, cluster_indexes, clust_min=0, clust_max=np.inf):
         if i == len(cluster_indexes) - 1:
             # Go from here to end of x/Y array
             ax.plot(x[cluster_indexes[i] : ], Y[cluster_indexes[i] : ], c='C%i' % i)
+            ax.scatter(x[cluster_indexes[i]:], Y[cluster_indexes[i]:], c='C%i' % i, marker='x')
         else:
             # Go from here to cluster_indexes[i+1]
             ax.plot(x[cluster_indexes[i] : cluster_indexes[i+1]], Y[cluster_indexes[i] : cluster_indexes[i+1]], c='C%i' % i)
-
+            ax.scatter(x[cluster_indexes[i]: cluster_indexes[i + 1]], Y[cluster_indexes[i]: cluster_indexes[i + 1]], c='C%i' % i, marker='x')
     ax.grid(True)
     plt.show()
 
@@ -83,6 +89,6 @@ def plot(x, Y, cluster_indexes, clust_min=0, clust_max=np.inf):
 # f.close()
 
 if __name__ == "__main__":
-    [x, Y, cluster_indexes, window_counter] = parse('./inputs/log_file.txt', max_window=2)
+    [x, Y, cluster_indexes, window_counter] = parse('./inputs/log_file.txt', max_window=15)
     [x, Y] = filter_angles(x, Y)
-    plot(x, Y, cluster_indexes, clust_min=1, clust_max=1)
+    plot(x, Y, cluster_indexes)
