@@ -6,9 +6,8 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 # This code assumes that the clusters are written down in a sorted fashion
-np.set_printoptions(threshold=np.nan)
+#np.set_printoptions(threshold=np.nan)
 
-# TODO: fix the insertion into x so that each time you enter a new window, you don't just add the value of the window_counter to int(line[1]), but rather the current sample offset + the maximum sample number of the current (to be left) window
 
 def parse(filename, max_window=np.inf):
     # Read all data (in CSV format) from log file
