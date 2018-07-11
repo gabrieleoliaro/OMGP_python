@@ -53,6 +53,7 @@ def test_omgp():
     plt.show()
 
     # OMGP tracking and plotting
+
     covfunc = np.matrix(['covSEiso'])     # Same type of covariance function for every GP in the model
     [F, qZ, loghyperinit, mu, C, pi0] = omgpA(covfunc, M, x_train, Y_train, x_test)
     print(pi0)
