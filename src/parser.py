@@ -78,8 +78,7 @@ def plot(x, Y, cluster_indexes, clust_min=0, clust_max=np.inf):
             ax.scatter(x[cluster_indexes[i]:], Y[cluster_indexes[i]:], c='C%i' % i, marker='x')
         else:
             # Go from here to cluster_indexes[i+1]
-            ax.plot(x[cluster_indexes[i]: cluster_indexes[i + 1]], Y[cluster_indexes[i]: cluster_indexes[i + 1]],
-                    c='C%i' % i)
+            ax.plot(x[cluster_indexes[i]: cluster_indexes[i + 1]], Y[cluster_indexes[i]: cluster_indexes[i + 1]], c='C%i' % i)
             ax.scatter(x[cluster_indexes[i]: cluster_indexes[i + 1]], Y[cluster_indexes[i]: cluster_indexes[i + 1]],
                        c='C%i' % i, marker='x')
     ax.grid(True)
@@ -96,10 +95,10 @@ def plot(x, Y, cluster_indexes, clust_min=0, clust_max=np.inf):
 
 if __name__ == "__main__":
 
-    [x, Y, cluster_indexes, window_counter] = parse('../inputs/log_file.txt', min_window = 4, max_window = 6)
+    [x, Y, cluster_indexes, window_counter] = parse('../inputs/log_file.txt', min_window = 15, max_window = 30)
     M = len(cluster_indexes)
     [x, Y] = filter_angles(x, Y)
     plot(x, Y, cluster_indexes)
     print(cluster_indexes)
-    print('M:',M)
+    print('M:', M)
 

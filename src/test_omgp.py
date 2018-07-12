@@ -22,7 +22,6 @@ def test_omgp():
     D = 2
     M = 4
 
-
     # Tunable hyperparameters
     timescale = 20
     sigvar = 1
@@ -36,8 +35,6 @@ def test_omgp():
     Y_train = Y[::2]
     x_test = x[1::2]
     Y_test = Y[1::2]
-
-    
 
     # Initialize Plot
     fig = plt.figure()
@@ -56,7 +53,6 @@ def test_omgp():
     plt.show()
 
     # OMGP tracking and plotting
-
     covfunc = np.matrix(['covSEiso'])     # Same type of covariance function for every GP in the model
     [F, qZ, loghyperinit, mu, C, pi0] = omgp(covfunc, M, x_train, Y_train, x_test)
     print(pi0)
@@ -87,16 +83,13 @@ def test_omgp():
                 Y_train0_new = np.append(Y_train0_new, Y_train[i, 0])
                 if D > 2:
                     Y_train1_new = np.append(Y_train1_new, Y_train[i, 1])
-
         if D == 2:
             ax2.scatter(x_train_new, Y_train0_new, c='C%i'%c, marker='x')  # Add scattered points
             ax2.plot(np.squeeze(np.asarray(x_test)), mu[:, 0, c], c='C%i'%c)
         else:
             ax2.scatter(x_train_new, Y_train0_new, Y_train1_new, c='C%i'%c, marker='x')  # Add scattered points
             ax2.plot3D(np.squeeze(np.asarray(x_test)), mu[:, 0, c], mu[:, 1, c], c='C%i'%c)
-
     plt.show()
-
     
-
-test_omgp()
+if __name__ == '__main__':
+    test_omgp()
