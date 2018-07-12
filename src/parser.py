@@ -96,8 +96,10 @@ def plot(x, Y, cluster_indexes, clust_min=0, clust_max=np.inf):
 
 if __name__ == "__main__":
 
-    [x, Y, cluster_indexes, window_counter] = parse('../inputs/log_file.txt', min_window = 3, max_window = 4)
+    [x, Y, cluster_indexes, window_counter] = parse('../inputs/log_file.txt', min_window = 4, max_window = 6)
+    M = len(cluster_indexes)
     [x, Y] = filter_angles(x, Y)
     plot(x, Y, cluster_indexes)
     print(cluster_indexes)
+    print('M:',M)
 

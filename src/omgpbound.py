@@ -4,10 +4,6 @@ import numpy as np
 from covariance import *
 
 
-# TODO: replace A, B, C, ... with number of params required
-#A-> nargin=6, nargout=2
-#B-> nargin=7, nargout=2
-
 def omgpboundA(loghyper, learn, covfunc, M, X, Y):
     """
     Computes the negative of the Marginalized Variational Bound (F) and its 

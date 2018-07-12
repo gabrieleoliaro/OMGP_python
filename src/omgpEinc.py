@@ -109,9 +109,4 @@ def omgpEinc(loghyper, covfunc, M, X, Y):
     logqZ = logqZ[:, 1:]
     loghyper[-N * (M - 1) : ] = logqZ.flatten('F')
 
-    # This would also update pZ:
-    #logpZ = log(sum(qZ,1)+ones(1,M)/M);
-    #logpZ = logpZ - max(logpZ);logpZ = logpZ-log(sum(exp(logpZ)));logpZ=logpZ-logpZ(1); 
-    #loghyper(end-N*(M-1)-2*M+2:end-N*(M-1)-M) = logpZ(2:end);
-
     return [loghyper, convergence]

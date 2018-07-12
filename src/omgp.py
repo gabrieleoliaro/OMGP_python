@@ -13,7 +13,7 @@ from omgpEinc import *
 
 #omgpA -> nargin = 5, nargout = 6, called first from test:omgp
 
-def omgpA(covfunc, M, X, Y, Xs):
+def omgp(covfunc, M, X, Y, Xs):
     """
     One possible way to initialize and optimize hyperparameters:
 
@@ -61,13 +61,11 @@ def omgpA(covfunc, M, X, Y, Xs):
             raise Warning('Covariance type not (yet) supported')
     # Add responsibilities
     qZ = np.random.rand(N, M) + 10
-#    qZ = read_matrix('/Users/Gabriele/Desktop/Poli/OMGP_python/inputs/qZ')
 
     qZ = np.divide(qZ, npm.repmat(qZ.sum(axis = 1),M,1).conj().transpose())
-#    qZ = np.divide(qZ, npm.repmat(qZ.sum(axis = 1),1,M))
     logqZ = np.log(qZ)
     
-    logqZ = logqZ - np.matmul(np.matrix((logqZ [:,0])).conj().transpose(), np.ones((1, M))) #np.matrix(()).conj().transpose()
+    logqZ = logqZ - np.matmul(np.matrix((logqZ [:,0])).conj().transpose(), np.ones((1, M)))
     logqZ = logqZ[:,1:]
 
 

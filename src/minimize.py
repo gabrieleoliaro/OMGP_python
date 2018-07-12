@@ -8,23 +8,21 @@ def minimize(loghyper, f, length, learn, covfunc, M, X, Y):
     Minimize a differentiable multivariate function using conjugate gradients.
     
 
-    Usage: [X, fX, i] = minimize(X, f, length, P1, P2, P3, ... )
-    X           initial guess; may be of any type, including struct and cell array
-    f           the name or pointer to the function to be minimized. The function
+    Usage: [loghyper, fX] = minimize(loghyper, f, length, learn, covfunc, M, X, Y)
+    loghyper    initial guess; may be of any type, including struct and cell array
+    f           the name of the function to be minimized. The function
                 f must return two arguments, the value of the function, and it's
-                partial derivatives wrt the elements of X. The partial derivative
-                must have the same type as X.
+                partial derivatives wrt the elements of loghyper. The partial derivative
+                must have the same type as loghyper.
     length      length of the run; if it is positive, it gives the maximum number of
                 line searches, if negative its absolute gives the maximum allowed
                 number of function evaluations. Optionally, length can have a second
                 component, which will indicate the reduction in function value to be
                 expected in the first line-search (defaults to 1.0).
-    P1, P2, ... parameters are passed to the function f.
+    learn, covfunc, M, X, Y parameters are passed to the function f.
 
-    X           the returned solution
+    loghyper    the returned solution
     fX          vector of function values indicating progress made
-    i           number of iterations (line searches or function evaluations,
-                depending on the sign of "length") used at termination.
 
     The function returns when either its length is up, or if no further progress
     can be made (ie, we are at a (local) minimum, or so close that due to
@@ -39,8 +37,6 @@ def minimize(loghyper, f, length, learn, covfunc, M, X, Y):
     the slope ratio method for guessing initial step sizes. Additionally a bunch
     of checks are made to make sure that exploration is taking place and that
     extrapolation will not be unboundedly large.
-
-    See also: checkgrad
 
     Copyright (C) 2001 - 2010 by Carl Edward Rasmussen, 2010-01-03
     """
