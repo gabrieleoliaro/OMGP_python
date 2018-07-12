@@ -1,9 +1,9 @@
 # OMGP_python
-This is the code for a 2D Gaussian Process Regression based upon the paper "Overlapping Mixtures of Gaussian Processes for the data association problem" by Miguel Lázaro-Gredilla et al.
+This code aims to associate observations of moving entities around a robot to either players and/or objects in the surrounding space.
+- The approach is to use Overlapping Mixtures of Gaussian Process Experts (OMGP), as in the 2011 [paper](https://arxiv.org/abs/1108.3372) by Lázaro-Gredilla et al.
+- The robot is powered by the Robotics Operating System (ROS) and needs to be able to interact with the player and play a dynamic game. It uses lasers and a Microsoft Kinect ® camera to perform SLAM and to locate the player(s) 
 
-The code is not very fast, so it needs to be optimized.
-Something to do is to make the program available on python versions earlier than 3.x, so that it can be run with the simple 'python' command
-It would also help to rewrite/refactor the code into OOP
+The code is not too fast yet, but it will be soon optimized.
 
 **Files:**<br/>
 * `covariance.py` -- Contains all the functions to generate the covariance matrices, test set covariances, and derivative matrices. <br/>
