@@ -3,7 +3,7 @@ This code aims to associate observations of moving entities around a robot to ei
 - The approach is to use Overlapping Mixtures of Gaussian Process Experts (OMGP), as in the 2011 [paper](https://arxiv.org/abs/1108.3372) by Lázaro-Gredilla et al.
 - The robot is powered by the Robotics Operating System (ROS) and needs to be able to interact with the player and play a dynamic game. It uses lasers and a Microsoft Kinect ® camera to perform SLAM and to locate the player(s) 
 
-The code is not too fast yet, but it will be soon optimized.
+The code is not too fast yet (because of the slowless of the np.linalg.solve function, see [cProfile results](OMGP_python/snakeviz cProfile.pdf)), but it will be soon optimized.
 
 **Files:**<br/>
 * `covariance.py` -- Contains all the functions to generate the covariance matrices, test set covariances, and derivative matrices. <br/>
