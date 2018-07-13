@@ -16,7 +16,8 @@ def parse(filename):
     x = np.array([], dtype=int)
     Y = np.array([])
     cluster_indexes = np.array([], dtype=int)
-    window_indexes = np.array([], dtype=int) # Array representing at which sample number (from the beginning) the ith window begins
+    window_indexes = np.array([],
+                              dtype=int)  # Array representing at which sample number (from the beginning) the ith window begins
 
     f_in = open(filename, 'r')
     reader = csv.reader(f_in, delimiter=",")
@@ -48,70 +49,63 @@ def parse(filename):
     return [x, Y, cluster_indexes, window_indexes]
 
 
-# def filter_angles(x, Y, min_angle=0., max_angle=180.):
-#     x2 = np.array([], dtype=int)
-#     Y2 = np.array([])
-#     for i in range(len(Y)):
-#         if Y[i] >= min_angle and Y[i] <= max_angle:
-#             x2 = np.append(x2, x[i])
-#             Y2 = np.append(Y2, Y[i])
-#     x = x2
-#     Y = Y2
-#
-#     return [x, Y]
 
-
-def plot(x, Y, cluster_indexes, window_indexes, clust_min=0, clust_max=np.inf, window_min=0, window_max=np.inf):
+def plot(x, Y, cluster_indexes, window_indexes, clust_min=0, clust_max=np.inf, window_min=0, window_max=np.inf, minSamplesxWindow=0, maxSamplesxWindow=np.inf):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_xlabel('Sample')
     ax.set_ylabel('Angle')
 
-    # Make sure clust_min, clust_max, window_min and window_max are in the proper range
-    if clust_min < 0 or clust_min > len(cluster_indexes):
-        clust_min = 0
-    if clust_max < 0 or clust_max > len(cluster_indexes):
-        clust_max = len(cluster_indexes)
-    if window_min < 0 or window_min > len(window_indexes):
+    if window_min < 0 or window_min >= len(window_indexes):
         window_min = 0
-    if window_max < 0 or window_max > len(window_indexes):
-        window_max = len(window_indexes) -1
+    if window_max < 0 or window_max >= len(window_indexes):
+        window_max = len(window_indexes) - 1
+    if clust_min < 0 or clust_min >= len(cluster_indexes):
+        clust_min = 0
+    if clust_max < 0 or clust_max >= len(cluster_indexes):
+        clust_max = len(cluster_indexes) - 1
+    if minSamplesxWindow < 0 or minSamplesxWindow > 9:
+        minSamplesxWindow = 0
+    if maxSamplesxWindow < 0 or maxSamplesxWindow > 9:
+        maxSamplesxWindow = 9
 
     for i in range(len(cluster_indexes)):
         if i < clust_min or i > clust_max:
             continue
-        if i == len(cluster_indexes) - 1:
-            # Go from here to end of x/Y array
-            if len(x[cluster_indexes[i] + window_indexes[window_min] : min(len(x), cluster_indexes[i] + window_indexes[window_max] - window_indexes[window_max-1])]) == 9: #Only print clusters that appear in 9 samples in the current window
-                ax.plot(x[cluster_indexes[i] + window_indexes[window_min] : min(len(x), cluster_indexes[i] + window_indexes[window_max] - window_indexes[window_max-1])], Y[cluster_indexes[i] + window_indexes[window_min] : min(len(x), cluster_indexes[i] + window_indexes[window_max] - window_indexes[window_max-1])], c='C%i' % i)
-                ax.scatter(x[cluster_indexes[i] + window_indexes[window_min] : min(len(x), cluster_indexes[i] + window_indexes[window_max] - window_indexes[window_max-1])], Y[cluster_indexes[i] + window_indexes[window_min] : min(len(x), cluster_indexes[i] + window_indexes[window_max] - window_indexes[window_max-1])], c='C%i' % i, marker='x')
-            print('samples for cluster %i: ' %i, len(x[cluster_indexes[i] + window_indexes[window_min] : min(len(x), cluster_indexes[i] + window_indexes[window_max] - window_indexes[window_max-1])]))
-        else:
-            # Go from here to cluster_indexes[i+1]
-            #TODO: add the - window_indexes[window_max-1] but only if window_max-1 >= 0 part
-            if len(x[cluster_indexes[i] + window_indexes[window_min] : min(cluster_indexes[i + 1], cluster_indexes[i] + window_indexes[window_max])]) == 9:  # Only print clusters that appear in 9 samples in the current window
-                ax.plot(x[cluster_indexes[i] + window_indexes[window_min] : min(cluster_indexes[i + 1], cluster_indexes[i] + window_indexes[window_max])], Y[cluster_indexes[i] + window_indexes[window_min] : min(cluster_indexes[i + 1], cluster_indexes[i] + window_indexes[window_max])], c='C%i' % i)
-                ax.scatter(x[cluster_indexes[i] + window_indexes[window_min] : min(cluster_indexes[i + 1], cluster_indexes[i] + window_indexes[window_max])], Y[cluster_indexes[i] + window_indexes[window_min] : min(cluster_indexes[i + 1], cluster_indexes[i] + window_indexes[window_max])], c='C%i' % i, marker='x')
-            print('samples for cluster %i: ' %i, len(x[cluster_indexes[i] + window_indexes[window_min] : min(cluster_indexes[i + 1], cluster_indexes[i] + window_indexes[window_max])]))
+        for w in range(window_min, window_max):
+            sample_min = window_indexes[w]
+            sample_max = window_indexes[window_max] if w == window_max-1 else window_indexes[w+1]
+            if i == len(cluster_indexes) - 1:
+                # Go from here to end of x/Y array
+                x_plot = np.array([], dtype=int)
+                Y_plot = np.array([])
+                for j in range(cluster_indexes[i], len(x)):
+                    if x[j] >= sample_min and x[j] < sample_max:
+                        x_plot = np.append(x_plot, x[j])
+                        Y_plot = np.append(Y_plot, Y[j])
+                if len(x_plot) >= minSamplesxWindow and len(x_plot) <= maxSamplesxWindow:
+                    ax.plot(x_plot, Y_plot, c='C%i' % i)
+                    ax.scatter(x_plot, Y_plot, c='C%i' % i, marker='x')
+            else:
+                # Go from here to cluster_indexes[i+1]
+                x_plot = np.array([], dtype=int)
+                Y_plot = np.array([])
+                for j in range(cluster_indexes[i], cluster_indexes[i+1]):
+                    if x[j] >= sample_min and x[j] < sample_max:
+                        x_plot = np.append(x_plot, x[j])
+                        Y_plot = np.append(Y_plot, Y[j])
+                if len(x_plot) >= minSamplesxWindow and len(x_plot) <= maxSamplesxWindow:
+                    ax.plot(x_plot, Y_plot, c='C%i' % i)
+                    ax.scatter(x_plot, Y_plot, c='C%i' % i, marker='x')
     ax.grid(True)
     plt.show()
-
-
-# # Print all local variabels to file
-# f = open("variables.csv", "w")
-# w = csv.writer(f)
-# local_variables = locals().copy()
-# for key, value in local_variables.items():
-#     w.writerow([key, value])
-# f.close()
 
 if __name__ == "__main__":
 
     [x, Y, cluster_indexes, window_indexes] = parse('../inputs/log_file.txt')
     window_counter = len(window_indexes)
+    print('window counter: ', window_counter)
     M = len(cluster_indexes)
-    #[x, Y] = filter_angles(x, Y)
-    plot(x, Y, cluster_indexes, window_indexes, window_min=0, window_max=1)
+    plot(x, Y, cluster_indexes, window_indexes, minSamplesxWindow=9)
     print(cluster_indexes)
     print('M:', M)
-
