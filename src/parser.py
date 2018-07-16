@@ -70,6 +70,8 @@ def plot(x, Y, cluster_indexes, window_indexes, clust_min=0, clust_max=np.inf, w
         maxSamplesxWindow = 9
 
     for i in range(len(cluster_indexes)):
+        x_input = np.array([], dtype=int)
+        y_input = np.array([])
         if i < clust_min or i > clust_max:
             continue
         for w in range(window_min, window_max):
@@ -86,6 +88,8 @@ def plot(x, Y, cluster_indexes, window_indexes, clust_min=0, clust_max=np.inf, w
                 if len(x_plot) >= minSamplesxWindow and len(x_plot) <= maxSamplesxWindow:
                     ax.plot(x_plot, Y_plot, c='C%i' % i)
                     ax.scatter(x_plot, Y_plot, c='C%i' % i, marker='x')
+                    x_input = np.append(x_input, x_plot)
+                    y_input = np.append(y_input, Y_plot)
             else:
                 # Go from here to cluster_indexes[i+1]
                 x_plot = np.array([], dtype=int)
@@ -97,15 +101,16 @@ def plot(x, Y, cluster_indexes, window_indexes, clust_min=0, clust_max=np.inf, w
                 if len(x_plot) >= minSamplesxWindow and len(x_plot) <= maxSamplesxWindow:
                     ax.plot(x_plot, Y_plot, c='C%i' % i)
                     ax.scatter(x_plot, Y_plot, c='C%i' % i, marker='x')
+                    x_input = np.append(x_input, x_plot)
+                    y_input = np.append(y_input, Y_plot)
     ax.grid(True)
     plt.show()
 
 if __name__ == "__main__":
-
     [x, Y, cluster_indexes, window_indexes] = parse('../inputs/log_file.txt')
     window_counter = len(window_indexes)
     print('window counter: ', window_counter)
     M = len(cluster_indexes)
-    plot(x, Y, cluster_indexes, window_indexes, minSamplesxWindow=9)
+    plot(x, Y, cluster_indexes, window_indexes, minSamplesxWindow=9, window_min=51, window_max=56)
     print(cluster_indexes)
     print('M:', M)

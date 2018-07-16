@@ -11,36 +11,47 @@ import numpy as np
 from omgp_load import *
 from omgp import *
 from quality import *
+from parser import *
 
 def test_omgp():
     """
     Tests functions omgp_gen and omgp
     """
-
+    WINDOW_MIN = 51
+    WINDOW_MAX = 56
     # Number of time instants per GP, dimensions and GPs
-    n = 100
+    n = (WINDOW_MAX - WINDOW_MIN)*9
     D = 2
-    M = 4
+    M = 2
 
     # Tunable hyperparameters
     timescale = 20
-    sigvar = 1
-    noisevar = 0.002
+    sigvar = 10
+    noisevar = 0.0002
 
     # Data generation and plotting
     loghyper = np.array([np.log(timescale), 0.5 * np.log(sigvar), 0.5 * np.log(noisevar)])
-    [x, Y] = omgp_gen(loghyper, n, D, M)
+    #[x, Y] = omgp_gen(loghyper, n, D, M)
+    [x, Y, cluster_indexes, window_indexes] = parse('../inputs/log_file.txt')
     
-    x_train = x[::2]
-    Y_train = Y[::2]
-    x_test = x[1::2]
-    Y_test = Y[1::2]
+    [x, Y] = omgp_load(x, Y, cluster_indexes, window_indexes, minSamplesxWindow=9, window_min=WINDOW_MIN, window_max=WINDOW_MAX)
+    
+    # x_train = x[::2]
+    # Y_train = Y[::2]
+    # x_test = x[1::2]
+    # Y_test = Y[1::2]
+    x_train = x
+    Y_train = Y
+    #x_test = (window_indexes[WINDOW_MAX] - window_indexes[WINDOW_MIN]) * np.random.rand(36,1) + window_indexes[WINDOW_MIN]
+    x_test = np.random.randint(window_indexes[WINDOW_MIN], window_indexes[WINDOW_MAX], (36,1))
+    x_test.sort(0)
 
     # Initialize Plot
     fig = plt.figure()
     if D == 2:
         ax = fig.add_subplot(111)
-        ax.scatter(np.squeeze(np.asarray(x_train)), Y_train[:, 0], c='k', marker='x')  # Add scattered points
+        # Changed Y_train[:, 0] to np.squeeze(np.asarray(Y_train)) when transitioning from omgp_gen to omgp_load
+        ax.scatter(np.squeeze(np.asarray(x_train)), np.squeeze(np.asarray(Y_train)), c='k', marker='x')  # Add scattered points
     else: # The graph will be in 3D (dataset-> 3 dimensions or more)
         ax = fig.add_subplot(111, projection='3d')
         ax.scatter(x_train, Y_train[:, 0], Y_train[:, 1], c='k', marker='x')  # Add scattered points
@@ -56,7 +67,7 @@ def test_omgp():
     covfunc = np.matrix(['covSEiso'])     # Same type of covariance function for every GP in the model
     [F, qZ, loghyperinit, mu, C, pi0] = omgp(covfunc, M, x_train, Y_train, x_test)
     print(pi0)
-    [NMSE, NLPD] = quality(Y_test, mu, C, pi0)
+    #[NMSE, NLPD] = quality(Y_test, mu, C, pi0)
 
     [nada, label] = qZ.max(1), qZ.argmax(1)
     fig2 = plt.figure()
