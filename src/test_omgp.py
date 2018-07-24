@@ -3,24 +3,48 @@
 #put omgp gen back
 # fix omgp qZ random
 
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-import numpy as np
-
+from omgp import *
 # External modules (Python files in the same folder)
 from omgp_load import *
-from omgp import *
-from quality import *
 from parser import *
+
+
+def print_windows(windows, start_from=0, n_win=16, min_pts=9):
+    """Plot a sequence of windows
+    Parameters:
+        windows: the list of windows
+        start_from: index of first window to be plotted.
+        n_win: how many windows to plot
+        min_pts: the minimum number of points to be plotted.
+    """
+    fig = plt.figure()
+    for i, w in enumerate(range(start_from, start_from + n_win)):
+        l = int(np.sqrt(n_win))
+        ax = fig.add_subplot(l, l, i + 1)
+        for c in windows[w].values():
+            if len(c) >= min_pts:
+                ax.plot(c)
+        ax.set_ylim((89, 181))
+        ax.set_xlabel('sample')
+        ax.set_ylabel('angle')
+        ax.set_yticks(range(90, 180, 20))
+        ax.set_xticks(range(0, 10, 3))
+        ax.grid()
+
+    plt.tight_layout()
+    plt.show()
+
 
 def test_omgp():
     """
     Tests functions omgp_gen and omgp
     """
-    WINDOW_MIN = 51
-    WINDOW_MAX = 56
+    WINDOW_MIN = 1
+    WINDOW_MAX = 6
+
     # Number of time instants per GP, dimensions and GPs
-    n = (WINDOW_MAX - WINDOW_MIN)*9
+    #n = (WINDOW_MAX - WINDOW_MIN)*9
+    n = 9
     D = 2
     M = 2
 
@@ -30,40 +54,63 @@ def test_omgp():
     noisevar = 0.0002
 
     # Data generation and plotting
-    loghyper = np.array([np.log(timescale), 0.5 * np.log(sigvar), 0.5 * np.log(noisevar)])
-    #[x, Y] = omgp_gen(loghyper, n, D, M)
-    [x, Y, cluster_indexes, window_indexes] = parse('../inputs/log_file.txt')
-    
-    [x, Y] = omgp_load(x, Y, cluster_indexes, window_indexes, minSamplesxWindow=9, window_min=WINDOW_MIN, window_max=WINDOW_MAX)
-    
-    # x_train = x[::2]
-    # Y_train = Y[::2]
-    # x_test = x[1::2]
-    # Y_test = Y[1::2]
-    x_train = x
-    Y_train = Y
-    #x_test = (window_indexes[WINDOW_MAX] - window_indexes[WINDOW_MIN]) * np.random.rand(36,1) + window_indexes[WINDOW_MIN]
-    x_test = np.random.randint(window_indexes[WINDOW_MIN], window_indexes[WINDOW_MAX], (36,1))
-    x_test.sort(0)
+    # loghyper = np.array([np.log(timescale), 0.5 * np.log(sigvar), 0.5 * np.log(noisevar)])
+    # [x, Y] = omgp_gen(loghyper, n, D, M)
 
-    # Initialize Plot
+    # load windows
+    windows = new_parse('../inputs/log_file.txt')
+
+    # plotting some windows for inspection
+    print_windows(windows, start_from=16)
+
+    # get windows with at least 9 points
+    Y = []
+    for w in windows:
+        for c in w.values():
+            if len(c) >= 9:
+                Y.append(c)
+    # ---
+
+    # plotting lines with at leas 9 points
+    fig = plt.figure()
+    for y in Y:
+        plt.plot(y)
+    plt.title("all lines with at least 9 samples")  # Add title
+    plt.xlabel('sample')
+    plt.ylabel('angle')
+    plt.show()
+    # ---
+
+
+    #[x, Y, cluster_indexes, window_indexes] = parse('../inputs/log_file.txt')
+    #[x, Y] = omgp_load(x, Y, cluster_indexes, window_indexes,
+    #                   minSamplesxWindow=9, window_min=WINDOW_MIN, window_max=WINDOW_MAX)
+
+    # setting the data set properly
+    x_train = [range(len(y)) for y in Y]
+    Y_train = Y
+    # x_test = np.random.randint(window_indexes[WINDOW_MIN], window_indexes[WINDOW_MAX], (36,1))
+    # x_test.sort(0)
+
+    ###### show data as scatter plot #####
     fig = plt.figure()
     if D == 2:
         ax = fig.add_subplot(111)
-        # Changed Y_train[:, 0] to np.squeeze(np.asarray(Y_train)) when transitioning from omgp_gen to omgp_load
-        ax.scatter(np.squeeze(np.asarray(x_train)), np.squeeze(np.asarray(Y_train)), c='k', marker='x')  # Add scattered points
+        for i in range(len(x_train)):
+            # Changed Y_train[:, 0] to np.squeeze(np.asarray(Y_train)) when transitioning from omgp_gen to omgp_load
+            ax.scatter(x_train[i], Y_train[i], c='k', marker='x')  # Add scattered points
     else: # The graph will be in 3D (dataset-> 3 dimensions or more)
         ax = fig.add_subplot(111, projection='3d')
         ax.scatter(x_train, Y_train[:, 0], Y_train[:, 1], c='k', marker='x')  # Add scattered points
         ax.set_zlabel('Z Axis')
         ax.view_init(elev=20, azim=30) #Works!
-    
     ax.set_title("%d trajectories to be separated" % M)  # Add title
     ax.set_xlabel('X Axis')
     ax.set_ylabel('Y Axis')
     plt.show()
+    ##### --- #####
 
-    # OMGP tracking and plotting
+    ###### OMGP tracking and plotting #####
     covfunc = np.matrix(['covSEiso'])     # Same type of covariance function for every GP in the model
     [F, qZ, loghyperinit, mu, C, pi0] = omgp(covfunc, M, x_train, Y_train, x_test)
     print(pi0)
