@@ -3,11 +3,25 @@
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
+from collections import defaultdict
 from mpl_toolkits.mplot3d import Axes3D
 
 
 # This code assumes that the clusters are written down in a sorted fashion
 # np.set_printoptions(threshold=np.nan)
+
+def new_parse(filename):
+    windows = []
+    win = defaultdict(list)
+    reader = csv.reader(open(filename, 'r'), delimiter=",")
+    for i, line in enumerate(reader):
+        if line == ['--']:
+            windows.append(win)
+            win = defaultdict(list)
+        elif line != []:
+            win[line[0]].append(float(line[2]))
+    return windows
+
 
 
 def parse(filename):
