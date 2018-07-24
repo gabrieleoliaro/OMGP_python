@@ -46,11 +46,11 @@ def test_omgp():
     #n = (WINDOW_MAX - WINDOW_MIN)*9
     n = 100
     D = 2
-    M = 3
+    M = 2
 
     # Tunable hyperparameters
     timescale = 20
-    sigvar = 10
+    sigvar = 1
     noisevar = 0.0002
 
     # Data generation and plotting
@@ -61,7 +61,7 @@ def test_omgp():
     windows = new_parse('../inputs/log_file.txt')
 
     # plotting some windows for inspection
-    print_windows(windows, start_from=16)
+    print_windows(windows, start_from=0)
 
     # get windows with at least 9 points
     Y = []
@@ -88,7 +88,7 @@ def test_omgp():
     x_train = np.matrix(x_train).conj().transpose()
     Y_train = np.array([item for sublist in Y for item in sublist])
     Y_train = np.matrix(Y_train).conj().transpose()
-    x_test = np.random.randint(0, 8, (36,1))
+    x_test = np.random.randint(0,9, (9,1))
     x_test.sort(0)
 
     ###### show data as scatter plot #####
