@@ -44,9 +44,9 @@ def test_omgp():
 
     # Number of time instants per GP, dimensions and GPs
     #n = (WINDOW_MAX - WINDOW_MIN)*9
-    n = 9
+    n = 100
     D = 2
-    M = 2
+    M = 3
 
     # Tunable hyperparameters
     timescale = 20
@@ -71,7 +71,7 @@ def test_omgp():
                 Y.append(c)
     # ---
 
-    # plotting lines with at leas 9 points
+    # plotting lines with at least 9 points
     fig = plt.figure()
     for y in Y:
         plt.plot(y)
@@ -81,24 +81,21 @@ def test_omgp():
     plt.show()
     # ---
 
-
-    #[x, Y, cluster_indexes, window_indexes] = parse('../inputs/log_file.txt')
-    #[x, Y] = omgp_load(x, Y, cluster_indexes, window_indexes,
-    #                   minSamplesxWindow=9, window_min=WINDOW_MIN, window_max=WINDOW_MAX)
-
     # setting the data set properly
-    x_train = [range(len(y)) for y in Y]
-    Y_train = Y
-    # x_test = np.random.randint(window_indexes[WINDOW_MIN], window_indexes[WINDOW_MAX], (36,1))
-    # x_test.sort(0)
+    x_train = np.array([], dtype=int)
+    for y in Y:
+        x_train = np.append(x_train, range(len(y)))
+    x_train = np.matrix(x_train).conj().transpose()
+    Y_train = np.array([item for sublist in Y for item in sublist])
+    Y_train = np.matrix(Y_train).conj().transpose()
+    x_test = np.random.randint(0, 8, (36,1))
+    x_test.sort(0)
 
     ###### show data as scatter plot #####
     fig = plt.figure()
     if D == 2:
         ax = fig.add_subplot(111)
-        for i in range(len(x_train)):
-            # Changed Y_train[:, 0] to np.squeeze(np.asarray(Y_train)) when transitioning from omgp_gen to omgp_load
-            ax.scatter(x_train[i], Y_train[i], c='k', marker='x')  # Add scattered points
+        ax.scatter(np.squeeze(np.asarray(x_train)), np.squeeze(np.asarray(Y_train)), c='k', marker='x')  # Add scattered points
     else: # The graph will be in 3D (dataset-> 3 dimensions or more)
         ax = fig.add_subplot(111, projection='3d')
         ax.scatter(x_train, Y_train[:, 0], Y_train[:, 1], c='k', marker='x')  # Add scattered points
