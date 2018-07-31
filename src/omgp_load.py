@@ -2,6 +2,7 @@
 from __future__ import division
 import numpy as np
 from covariance import *
+from parser import *
 
 
 def omgp_gen(loghyper, n, D, m):
@@ -44,57 +45,72 @@ def omgp_gen(loghyper, n, D, m):
     x.sort(0)
     
     Y = Y[order_X, :]
+
+    x_train = x[::2]
+    Y_train = Y[::2]
+    x_test = x[1::2]
+    Y_test = Y[1::2]
     
-    return [x, Y]
+    return [x_train, Y_train, x_test, Y_test]
 
 
-def omgp_load(x, Y, cluster_indexes, window_indexes, clust_min=0, clust_max=np.inf, window_min=0, window_max=np.inf, minSamplesxWindow=0, maxSamplesxWindow=np.inf):
-    if window_min < 0 or window_min >= len(window_indexes):
-        window_min = 0
-    if window_max < 0 or window_max >= len(window_indexes):
-        window_max = len(window_indexes) - 1
-    if clust_min < 0 or clust_min >= len(cluster_indexes):
-        clust_min = 0
-    if clust_max < 0 or clust_max >= len(cluster_indexes):
-        clust_max = len(cluster_indexes) - 1
-    if minSamplesxWindow < 0 or minSamplesxWindow > 9:
-        minSamplesxWindow = 0
-    if maxSamplesxWindow < 0 or maxSamplesxWindow > 9:
-        maxSamplesxWindow = 9
+def omgp_load(filename):
+    windows = new_parse(filename)
 
-    x_input = np.array([], dtype=int)
-    y_input = np.array([])
-    for i in range(len(cluster_indexes)):
-        if i < clust_min or i > clust_max:
-            continue
-        for w in range(window_min, window_max):
-            sample_min = window_indexes[w]
-            sample_max = window_indexes[window_max] if w == window_max-1 else window_indexes[w+1]
-            if i == len(cluster_indexes) - 1:
-                # Go from here to end of x/Y array
-                x_plot = np.array([], dtype=int)
-                Y_plot = np.array([])
-                for j in range(cluster_indexes[i], len(x)):
-                    if x[j] >= sample_min and x[j] < sample_max:
-                        x_plot = np.append(x_plot, x[j])
-                        Y_plot = np.append(Y_plot, Y[j])
-                if len(x_plot) >= minSamplesxWindow and len(x_plot) <= maxSamplesxWindow:
-                    x_input = np.append(x_input, x_plot)
-                    y_input = np.append(y_input, Y_plot)
-            else:
-                # Go from here to cluster_indexes[i+1]
-                x_plot = np.array([], dtype=int)
-                Y_plot = np.array([])
-                for j in range(cluster_indexes[i], cluster_indexes[i+1]):
-                    if x[j] >= sample_min and x[j] < sample_max:
-                        x_plot = np.append(x_plot, x[j])
-                        Y_plot = np.append(Y_plot, Y[j])
-                if len(x_plot) >= minSamplesxWindow and len(x_plot) <= maxSamplesxWindow:
-                    x_input = np.append(x_input, x_plot)
-                    y_input = np.append(y_input, Y_plot)
+    # plotting some windows for inspection
+    print_windows(windows, start_from=0)
 
-    x_input = np.matrix(x_input).conj().transpose()
-    y_input = np.matrix(y_input).conj().transpose()
+    # get windows with at least 9 points
+    Y = []
+    for w in windows:
+        for c in w.values():
+            if len(c) >= 9:
+                Y.append(c)
+    # ---
 
+    # plotting lines with at least 9 points
+    fig = plt.figure()
+    for y in Y:
+        plt.plot(y)
+    plt.title("all lines with at least 9 samples")  # Add title
+    plt.xlabel('sample')
+    plt.ylabel('angle')
+    plt.show()
+    # ---
 
-    return [x_input, y_input]
+    # setting the data set properly
+    x_train = np.array([], dtype=int)
+    for y in Y:
+        x_train = np.append(x_train, range(len(y)))
+    x_train = np.matrix(x_train).conj().transpose()
+    Y_train = np.array([item for sublist in Y for item in sublist])
+    Y_train = np.matrix(Y_train).conj().transpose()
+    x_test = np.random.randint(0,9, (9,1))
+    x_test.sort(0)
+
+    return [x_train, Y_train, x_test]
+
+def print_windows(windows, start_from=0, n_win=16, min_pts=9):
+    """Plot a sequence of windows
+    Parameters:
+        windows: the list of windows
+        start_from: index of first window to be plotted.
+        n_win: how many windows to plot
+        min_pts: the minimum number of points to be plotted.
+    """
+    fig = plt.figure()
+    for i, w in enumerate(range(start_from, start_from + n_win)):
+        l = int(np.sqrt(n_win))
+        ax = fig.add_subplot(l, l, i + 1)
+        for c in windows[w].values():
+            if len(c) >= min_pts:
+                ax.plot(c)
+        ax.set_ylim((89, 181))
+        ax.set_xlabel('sample')
+        ax.set_ylabel('angle')
+        ax.set_yticks(range(90, 180, 20))
+        ax.set_xticks(range(0, 10, 3))
+        ax.grid()
+
+    plt.tight_layout()
+    plt.show()

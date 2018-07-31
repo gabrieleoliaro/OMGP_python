@@ -145,14 +145,6 @@ while i < abs(length)                                      % while not finished
     d3 = df3'*s;                                                    % new slope
   end                                                       % end interpolation
 
-%   if strcmp('learnall', varargin{1})
-%       fprintf('if #%i:\r', i);
-%       fprintf('abs(d3): %.8f\r', abs(d3));
-%       fprintf('-SIG*d0: %.8f\r', -SIG*d0);
-%       fprintf('f3: %.8f\r', f3);
-%       fprintf('f0+x3*RHO*d0: %.8f\r', f0+x3*RHO*d0);
-%   end
-%   
   if abs(d3) < -SIG*d0 && f3 < f0+x3*RHO*d0          % if line search succeeded
     X = X+x3*s; f0 = f3; fX = [fX' f0]';                     % update variables
     fprintf('%s %6i;  Value %4.6e\r', S, i, f0);

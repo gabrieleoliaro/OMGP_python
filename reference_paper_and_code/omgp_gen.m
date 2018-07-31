@@ -14,8 +14,6 @@ randn('state',rs); rand('state',rs);
 covfunc = {'covSum', {'covSEiso','covNoise'}};
 
 x = zeros(n*m,1);Y = zeros(n*m,D);
-
-
 for k = 1:m
     x((k-1)*n+1:k*n) = rand(n,1)*(n-1)+1;
     Y((k-1)*n+1:k*n,:) = chol(feval(covfunc{:}, loghyper, x((k-1)*n+1:k*n)))'*randn(n, D);        % Cholesky decomp.
