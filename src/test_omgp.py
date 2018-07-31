@@ -21,6 +21,8 @@ def test_omgp():
 
     # Parameter telling the program whether to load data from a log file or generate random values
     omgp_mode = OMGP_LOAD
+    if omgp_mode == OMGP_LOAD:
+        assert(D == 2)
 
     # Tunable hyperparameters
     timescale = 20
